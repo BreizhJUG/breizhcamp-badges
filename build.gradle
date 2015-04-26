@@ -1,0 +1,20 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+sourceCompatibility = 1.7
+version = '1.0'
+mainClassName = "BadgeGenerator"
+
+repositories {
+    //mavenCentral()
+    maven {
+        url "http://jcenter.bintray.com"
+    }
+}
+
+dependencies {
+    compile('org.codehaus.groovy:groovy:2.4.3')
+    compile('com.xlson.groovycsv:groovycsv:1.0')
+    compile('com.itextpdf:itextpdf:5.4.5')
+    runtime('commons-cli:commons-cli:1.2')
+}
