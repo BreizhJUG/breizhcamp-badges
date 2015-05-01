@@ -1,10 +1,10 @@
 lastname,firstname,email,company,ticketType
-Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Speaker
-Stark,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Hackerspace
-Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,Conférence
-Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Combo
-Stark,Sansa,sansa.stark@the-eyrie.wes,Unemployed,Speaker
-Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Hackerspace
-,Varys,varys@nsa.gouv.wes,Butterfly in chief,Conférence
-Others,The,the.others@beyond-the-wall.wes,Häagen-Dazs,Combo
+Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Team
+Stark,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Conf
+Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,Speaker
+Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Hacker
+Stark,Sansa,sansa.stark@the-eyrie.wes,Unemployed,Combo
+Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Exposant
+,Varys,varys@nsa.gouv.wes,Butterfly in chief,Team
+Others,The,the.others@beyond-the-wall.wes,Häagen-Dazs,Conf
 Hodor,Hodor,hodor.hodor@hodor.hodor,Les Déménageurs Bretons,Speaker
