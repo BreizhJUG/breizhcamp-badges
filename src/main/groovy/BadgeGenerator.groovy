@@ -5,7 +5,7 @@ import com.itextpdf.text.pdf.PdfPCell
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
-import com.xlson.groovycsv.CsvParser
+import org.breizhcamp.badge.CSVBadgeParser
 import org.breizhcamp.badge.ImageBackgroundEvent
 
 def cli = new CliBuilder(usage: 'badge-generator -i <path> [-o <path>] [-sc <char>] [-qc <char>] [-ec <char>] [-d]')
@@ -66,85 +66,81 @@ mainLayout.widths = [1f, 1f] as float[]
 
 def cellBorderWidth = debug ? 1f : 0f
 
-csvFile.withReader('UTF-8') { reader ->
+def badges = new CSVBadgeParser(csvFile.newInputStream(), [separator    : separator,
+                                                           quoteChar    : quoteChar,
+                                                           escapeChar   : escapeChar,
+                                                           readFirstLine: !hasHeader])
 
-    def lines = CsvParser.parseCsv([separator    : separator,
-                                    quoteChar    : quoteChar,
-                                    escapeChar   : escapeChar,
-                                    readFirstLine: !hasHeader],
-            reader)
+badges.each { badge ->
 
-    lines.each { cells ->
+    ++participantsCount
 
-        ++participantsCount
-
-        PdfPTable labelLayout = new PdfPTable(2)
-        labelLayout.with {
-            widthPercentage = 100
-            widths = [1f, 1f] as float[]
-        }
-
-        // First and last name
-        PdfPCell nameCell = new PdfPCell()
-        nameCell.with {
-            horizontalAlignment = ALIGN_LEFT
-            verticalAlignment = ALIGN_TOP
-            paddingLeft = 10
-            fixedHeight = milliToPoints(63.5)
-            borderWidth = cellBorderWidth
-        }
-        def nameParagraph = new Paragraph(24, "${cells.firstname}\n${cells.lastname}", nameFont)
-        nameParagraph.setSpacingAfter(32)
-        nameCell.addElement(nameParagraph)
-        nameCell.addElement(new Paragraph(16, "${cells.company}", nameFont))
-        labelLayout.addCell(nameCell)
-
-        // Right part
-        PdfPTable rightSide = new PdfPTable(1)
-        rightSide.with {
-            widthPercentage = 100
-            widths = [1f] as float[]
-        }
-
-        // Ticket type
-        String ticketType = cells.ticketType
-        PdfPCell ticketTypeCell = new PdfPCell(new Phrase(ticketType, ticketTypeFont))
-        ticketTypeCell.with {
-            horizontalAlignment = ALIGN_RIGHT
-            paddingTop = 10
-            paddingRight = 10
-            borderWidth = cellBorderWidth
-        }
-        rightSide.addCell(ticketTypeCell)
-
-        // QRCode
-        StringWriter qrCodeTextWriter = new StringWriter()
-        CSVWriter csvWriter = new CSVWriter(qrCodeTextWriter, separator, quoteChar, escapeChar)
-        csvWriter.writeNext([cells.lastname, cells.firstname, cells.company, cells.email] as String[])
-        csvWriter.flush()
-
-        PdfPCell qrcodeCell = new PdfPCell(new BarcodeQRCode(qrCodeTextWriter.toString(),
-                100, 100,
-                [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image)
-        qrcodeCell.with {
-            horizontalAlignment = ALIGN_CENTER
-            verticalAlignment = ALIGN_MIDDLE
-            borderWidth = cellBorderWidth
-        }
-        rightSide.addCell(qrcodeCell)
-
-        PdfPCell rightSideWrapper = new PdfPCell(rightSide)
-        rightSideWrapper.with {
-            cellEvent = new ImageBackgroundEvent(Image.getInstance(this.class.getResource("${backgrounds[cells.ticketType]}.png").toURI().toURL()))
-            borderWidth = cellBorderWidth
-        }
-        labelLayout.addCell(rightSideWrapper)
-
-        // Wrapper to remove label border
-        def labelWrapper = new PdfPCell(labelLayout)
-        labelWrapper.borderWidth = cellBorderWidth
-        mainLayout.addCell(labelWrapper)
+    PdfPTable labelLayout = new PdfPTable(2)
+    labelLayout.with {
+        widthPercentage = 100
+        widths = [1f, 1f] as float[]
     }
+
+    // First and last name
+    PdfPCell nameCell = new PdfPCell()
+    nameCell.with {
+        horizontalAlignment = ALIGN_LEFT
+        verticalAlignment = ALIGN_TOP
+        paddingLeft = 10
+        fixedHeight = milliToPoints(63.5)
+        borderWidth = cellBorderWidth
+    }
+    def nameParagraph = new Paragraph(24, "${badge.firstname}\n${badge.lastname}", nameFont)
+    nameParagraph.setSpacingAfter(32)
+    nameCell.addElement(nameParagraph)
+    nameCell.addElement(new Paragraph(16, "${badge.company}", nameFont))
+    labelLayout.addCell(nameCell)
+
+    // Right part
+    PdfPTable rightSide = new PdfPTable(1)
+    rightSide.with {
+        widthPercentage = 100
+        widths = [1f] as float[]
+    }
+
+    // Ticket type
+    String ticketType = badge.ticketType
+    PdfPCell ticketTypeCell = new PdfPCell(new Phrase(ticketType, ticketTypeFont))
+    ticketTypeCell.with {
+        horizontalAlignment = ALIGN_RIGHT
+        paddingTop = 10
+        paddingRight = 10
+        borderWidth = cellBorderWidth
+    }
+    rightSide.addCell(ticketTypeCell)
+
+    // QRCode
+    StringWriter qrCodeTextWriter = new StringWriter()
+    CSVWriter csvWriter = new CSVWriter(qrCodeTextWriter, separator, quoteChar, escapeChar)
+    csvWriter.writeNext([badge.lastname, badge.firstname, badge.company, badge.email] as String[])
+    csvWriter.flush()
+
+    PdfPCell qrcodeCell = new PdfPCell(new BarcodeQRCode(qrCodeTextWriter.toString(),
+            100, 100,
+            [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image)
+    qrcodeCell.with {
+        horizontalAlignment = ALIGN_CENTER
+        verticalAlignment = ALIGN_MIDDLE
+        borderWidth = cellBorderWidth
+    }
+    rightSide.addCell(qrcodeCell)
+
+    PdfPCell rightSideWrapper = new PdfPCell(rightSide)
+    rightSideWrapper.with {
+        cellEvent = new ImageBackgroundEvent(Image.getInstance(this.class.getResource("${backgrounds[badge.ticketType]}.png").toURI().toURL()))
+        borderWidth = cellBorderWidth
+    }
+    labelLayout.addCell(rightSideWrapper)
+
+    // Wrapper to remove label border
+    def labelWrapper = new PdfPCell(labelLayout)
+    labelWrapper.borderWidth = cellBorderWidth
+    mainLayout.addCell(labelWrapper)
 }
 
 (participantsCount % 2).times { // complète la dernière ligne pour obtenir la dernière ligne du tableau

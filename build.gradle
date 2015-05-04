@@ -1,3 +1,4 @@
+apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'application'
 
@@ -17,4 +18,9 @@ dependencies {
     compile('com.xlson.groovycsv:groovycsv:1.0')
     compile('com.itextpdf:itextpdf:5.4.5')
     runtime('commons-cli:commons-cli:1.2')
+
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: "groovy-all"
+    }
+    testRuntime('cglib:cglib-nodep:2.2')
 }
