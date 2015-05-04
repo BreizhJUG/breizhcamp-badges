@@ -1,8 +1,10 @@
 import au.com.bytecode.opencsv.CSVWriter
 import com.itextpdf.text.*
+import com.itextpdf.text.pdf.BarcodeQRCode
 import com.itextpdf.text.pdf.PdfPCell
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
+import com.itextpdf.text.pdf.qrcode.EncodeHintType
 import com.xlson.groovycsv.CsvParser
 import org.breizhcamp.badge.ImageBackgroundEvent
 
@@ -51,12 +53,12 @@ document.open()
 def nameFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, BaseColor.BLACK);
 def ticketTypeFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 
-def backgrounds = [Team: 'orange',
-        Conf: 'blue',
-        Speaker: 'yellow',
-        Hacker: 'violet',
-        Combo: 'green',
-        Exposant: 'black']
+def backgrounds = [Team    : 'orange',
+                   Conf    : 'blue',
+                   Speaker : 'yellow',
+                   Hacker  : 'violet',
+                   Combo   : 'green',
+                   Exposant: 'black']
 
 PdfPTable mainLayout = new PdfPTable(2)
 mainLayout.widthPercentage = 100
@@ -66,10 +68,10 @@ def cellBorderWidth = debug ? 1f : 0f
 
 csvFile.withReader('UTF-8') { reader ->
 
-    def lines = CsvParser.parseCsv([separator: separator,
-            quoteChar: quoteChar,
-            escapeChar: escapeChar,
-            readFirstLine: !hasHeader],
+    def lines = CsvParser.parseCsv([separator    : separator,
+                                    quoteChar    : quoteChar,
+                                    escapeChar   : escapeChar,
+                                    readFirstLine: !hasHeader],
             reader)
 
     lines.each { cells ->
@@ -121,7 +123,9 @@ csvFile.withReader('UTF-8') { reader ->
         csvWriter.writeNext([cells.lastname, cells.firstname, cells.company, cells.email] as String[])
         csvWriter.flush()
 
-        PdfPCell qrcodeCell = new PdfPCell(Image.getInstance("https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl=${URLEncoder.encode(qrCodeTextWriter.toString(), 'UTF-8')}"))
+        PdfPCell qrcodeCell = new PdfPCell(new BarcodeQRCode(qrCodeTextWriter.toString(),
+                100, 100,
+                [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image)
         qrcodeCell.with {
             horizontalAlignment = ALIGN_CENTER
             verticalAlignment = ALIGN_MIDDLE
