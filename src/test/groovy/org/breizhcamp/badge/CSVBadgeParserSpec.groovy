@@ -14,7 +14,7 @@ class CSVBadgeParserSpec extends Specification {
         parser = new CSVBadgeParser(inputStream, options)
 
         then: 'an error is thrown'
-        thrown(java.lang.AssertionError)
+        thrown(java.lang.IllegalArgumentException)
 
         where:
         inputStream       | options
