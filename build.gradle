@@ -1,6 +1,11 @@
+plugins {
+    id 'net.saliman.cobertura' version '2.2.8'
+}
+
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'application'
+apply plugin: 'net.saliman.cobertura'
 
 sourceCompatibility = 1.7
 version = '1.0'
@@ -14,13 +19,14 @@ repositories {
 }
 
 dependencies {
-    compile('org.codehaus.groovy:groovy:2.4.3')
-    compile('com.xlson.groovycsv:groovycsv:1.0')
-    compile('com.itextpdf:itextpdf:5.4.5')
-    runtime('commons-cli:commons-cli:1.2')
+    compile 'org.codehaus.groovy:groovy:2.4.3'
+    compile 'com.xlson.groovycsv:groovycsv:1.0'
+    compile 'com.itextpdf:itextpdf:5.5.5'
+    runtime 'commons-cli:commons-cli:1.2'
 
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: "groovy-all"
     }
-    testRuntime('cglib:cglib-nodep:2.2')
+    testRuntime 'cglib:cglib-nodep:2.2'
+    testRuntime 'org.slf4j:slf4j-api:1.7.9' // workaround to NoClassDefFoundError on org.slf4j.LoggerFactory with cobertura plugin
 }
