@@ -9,7 +9,6 @@ import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
 import org.breizhcamp.badge.Badge
 import org.breizhcamp.badge.PageLayout
-import org.breizhcamp.badge.pdf.ImageBackgroundEvent
 
 class PdfBadgeGenerator {
 
