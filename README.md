@@ -6,7 +6,7 @@ Générateur de badge pour le BreizhCamp.
 Pré-requis
 ----
 
-Java
+Java 8
 
 Build
 ---
@@ -22,22 +22,30 @@ Deux archives au contenu identique, un fichier `.tar` et un fichier `.zip`, sont
 Installation
 ---
 
-Décompresser l'archive de votre choix dans le répertoire de votre choix. Vous obtenez l'arborescence suivante :
+Décompresser l'archive dans le répertoire de votre choix. Vous obtenez l'arborescence suivante :
 
 ```
-badge-generator-1.0
+breizhcamp-badge-1.0
 ├── bin
-│   ├── badge-generator
-│   └── badge-generator.bat
+│   ├── breizhcamp-badge
+│   └── breizhcamp-badge.bat
 └── lib
-    ├── badge-generator-x.x.jar
+    ├── breizhcamp-badge-1.0.jar
+    ├── commons-cli-1.2.jar
     ├── groovy-2.4.3.jar
     ├── groovycsv-1.0.jar
-    ├── itextpdf-5.4.5.jar
+    ├── itextpdf-5.5.5.jar
     └── opencsv-2.1.jar
 ```
 
 Utilisation
 ---
 
-Exécuter le script `badge-generator` pour avoir toutes les informations nécessaires.
+Exécuter le script `breizhcamp-badge -h` pour obtenir de l'aide.
+
+En mode CSV, la première ligne du fichier doit obligatoirement contenir les libellés de colonnes suivants :
+* `lastname`,
+* `firstname`,
+* `company`,
+* `email`,
+* `ticketType`.
