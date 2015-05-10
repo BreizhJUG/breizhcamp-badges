@@ -1,4 +1,4 @@
-package org.breizhcamp.badge
+package org.breizhcamp.badge.pdf
 
 import au.com.bytecode.opencsv.CSVWriter
 import com.itextpdf.text.*
@@ -7,6 +7,9 @@ import com.itextpdf.text.pdf.PdfPCell
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
+import org.breizhcamp.badge.Badge
+import org.breizhcamp.badge.PageLayout
+import org.breizhcamp.badge.pdf.ImageBackgroundEvent
 
 class PdfBadgeGenerator {
 

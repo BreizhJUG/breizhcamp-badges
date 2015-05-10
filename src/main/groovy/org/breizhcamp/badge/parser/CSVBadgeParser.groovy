@@ -1,12 +1,14 @@
-package org.breizhcamp.badge
+package org.breizhcamp.badge.parser
 
 import com.xlson.groovycsv.CsvIterator
 import com.xlson.groovycsv.CsvParser
 import com.xlson.groovycsv.PropertyMapper
+import org.breizhcamp.badge.Badge
 
 import java.lang.IllegalArgumentException as IAE
+import java.util.function.Consumer
 
-class CSVBadgeParser implements Iterator<Badge> {
+class CSVBadgeParser implements BadgeParser {
 
     private CsvIterator linesIterator
 
@@ -35,5 +37,10 @@ class CSVBadgeParser implements Iterator<Badge> {
     @Override
     void remove() {
         throw new UnsupportedOperationException()
+    }
+
+    @Override
+    void forEachRemaining(Consumer<? super Badge> action) {
+        super.forEachRemaining(action)
     }
 }

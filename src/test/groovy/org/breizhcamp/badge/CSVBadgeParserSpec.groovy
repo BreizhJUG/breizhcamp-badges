@@ -1,5 +1,6 @@
 package org.breizhcamp.badge
 
+import org.breizhcamp.badge.parser.CSVBadgeParser
 import spock.lang.Specification
 import spock.lang.Unroll
 
