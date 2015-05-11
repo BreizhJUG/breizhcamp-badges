@@ -9,6 +9,8 @@ import org.breizhcamp.badge.PageLayout
 
 import java.lang.IllegalArgumentException as IAE
 
+import static com.itextpdf.text.pdf.BaseFont.*
+
 class PdfBadgeGenerator {
 
     private final PageLayout pageLayout
@@ -22,25 +24,16 @@ class PdfBadgeGenerator {
     private final BaseFont badgeFont, symbolFont
     private final Font nameFont, ticketTypeFont, twitterFont
 
-    private final Map backgrounds
-
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false) {
 
         if (pageLayout == null) throw new IAE('pageLayout must not be null')
         if (outputStream == null) throw new IAE('outputStream must not be null')
 
-        badgeFont = BaseFont.createFont('/fonts/nunito/Nunito-Light.ttf', BaseFont.IDENTITY_H, true)
-        symbolFont = BaseFont.createFont('/fonts/fontawesome/fontawesome-webfont.ttf', BaseFont.IDENTITY_H, BaseFont.EMBEDDED)
+        badgeFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
+        symbolFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
         nameFont = new Font(badgeFont, 16, Font.BOLD, BaseColor.BLACK)
         ticketTypeFont = new Font(badgeFont, 14, Font.BOLD, BaseColor.WHITE)
-        twitterFont = new Font(symbolFont, 16, Font.NORMAL, new BaseColor(58, 170, 225))
-
-        backgrounds = [Team    : 'orange',
-                       Conf    : 'blue',
-                       Speaker : 'yellow',
-                       Hacker  : 'violet',
-                       Combo   : 'green',
-                       Exposant: 'black']
+        twitterFont = new Font(symbolFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
 
         this.pageLayout = pageLayout
 
@@ -153,7 +146,11 @@ class PdfBadgeGenerator {
 
         PdfPCell backgroundWrapper = new PdfPCell(rightSide)
         backgroundWrapper.with {
-            cellEvent = new ImageBackgroundEvent(Image.getInstance(this.class.getResource("/images/${backgrounds[badge.ticketType]}.png").toURI().toURL()))
+            URL backgroundURL = (this.class.getResource("/images/background-${badge.ticketType?.toLowerCase()}.png") ?:
+                this.class.getResource("/images/background-default.png"))?.toURI()?.toURL()
+            if (backgroundURL) {
+                cellEvent = new ImageBackgroundEvent(Image.getInstance(backgroundURL))
+            }
             borderWidth = cellBorderWidth
         }
         return backgroundWrapper
@@ -178,7 +175,7 @@ class PdfBadgeGenerator {
     }
 
     void endDocument() {
-        (labelCount % pageLayout.columns).times { addFiller() } // fillers nécessaire pour compléter la dernière ligne
+        (labelCount % pageLayout.columns).times { addFiller() } // fillers nécessaires pour compléter la dernière ligne
         document.add(docTable)
         document.close()
     }
