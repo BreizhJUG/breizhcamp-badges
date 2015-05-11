@@ -1,6 +1,7 @@
-package org.breizhcamp.badge
+package org.breizhcamp.badge.pdf
 
 import com.itextpdf.text.PageSize
+import org.breizhcamp.badge.pdf.PageLayout
 import spock.lang.Specification
 
 

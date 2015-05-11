@@ -5,7 +5,6 @@ import com.itextpdf.text.*
 import com.itextpdf.text.pdf.*
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
 import org.breizhcamp.badge.Badge
-import org.breizhcamp.badge.PageLayout
 
 import java.lang.IllegalArgumentException as IAE
 

@@ -1,4 +1,4 @@
-package org.breizhcamp.badge
+package org.breizhcamp.badge.pdf
 
 import com.itextpdf.text.PageSize
 import com.itextpdf.text.Rectangle
