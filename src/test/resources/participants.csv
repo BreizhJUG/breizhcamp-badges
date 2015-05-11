@@ -1,6 +1,6 @@
 lastname,firstname,email,company,ticketType
 Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Team
-Stark,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Conf
+STARK,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Conf
 Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,Speaker
 Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Hacker
 Stark,Sansa,sansa.stark@the-eyrie.wes,Unemployed,Figurante

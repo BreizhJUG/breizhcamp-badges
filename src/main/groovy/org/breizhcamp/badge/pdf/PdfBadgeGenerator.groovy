@@ -88,7 +88,7 @@ class PdfBadgeGenerator {
             paddingLeft = 10
             borderWidth = cellBorderWidth
         }
-        def nameParagraph = new Paragraph(24, "${badge.firstname}\n${badge.lastname}", nameFont)
+        def nameParagraph = new Paragraph(24, "${titleCase(badge.firstname)}\n${titleCase(badge.lastname)}", nameFont)
         nameParagraph.setSpacingAfter(32)
         nameAndCompanyCell.addElement(nameParagraph)
         nameAndCompanyCell.addElement(new Paragraph(16, "${badge.company}", nameFont))
@@ -117,7 +117,7 @@ class PdfBadgeGenerator {
         PdfPTable rightSide = generateSideContentTable()
 
         // Ticket type
-        String ticketType = badge.ticketType
+        String ticketType = titleCase(badge.ticketType)
         PdfPCell ticketTypeCell = new PdfPCell(new Phrase(ticketType, ticketTypeFont))
         ticketTypeCell.with {
             horizontalAlignment = ALIGN_RIGHT
@@ -130,7 +130,7 @@ class PdfBadgeGenerator {
         // QRCode content
         StringWriter qrCodeTextWriter = new StringWriter()
         CSVWriter csvWriter = new CSVWriter(qrCodeTextWriter, ',' as char, '"' as char, '\\' as char)
-        csvWriter.writeNext([badge.lastname, badge.firstname, badge.company, badge.email] as String[])
+        csvWriter.writeNext([titleCase(badge.lastname), titleCase(badge.firstname), badge.company, badge.email] as String[])
         csvWriter.flush()
 
         // QRCode cell
@@ -187,5 +187,11 @@ class PdfBadgeGenerator {
 
     private double calculateLabelHeight() {
         (pageLayout.format.height - document.topMargin() - document.bottomMargin()) / pageLayout.rows
+    }
+
+    private static String titleCase(String s) {
+        return s == null ? s : s.split(/\s+/).collect {
+            it.length() > 0 ? (it[0].toUpperCase() + (it.length() > 1 ? it[1..-1].toLowerCase() : '')) : it
+        }.join(' ')
     }
 }
