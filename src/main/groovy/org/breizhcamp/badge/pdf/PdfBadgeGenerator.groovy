@@ -22,6 +22,7 @@ class PdfBadgeGenerator {
 
     private final BaseFont badgeFont, symbolFont
     private final Font nameFont, ticketTypeFont, twitterFont
+    private final PdfWriter writer
 
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false) {
 
@@ -37,7 +38,7 @@ class PdfBadgeGenerator {
         this.pageLayout = pageLayout
 
         document = [pageLayout.format, pageLayout.margins.collect(milliToPoints)].flatten() as Document
-        PdfWriter.getInstance(document, outputStream)
+        writer = PdfWriter.getInstance(document, outputStream)
 
         cellBorderWidth = debug ? 1f : 0f
     }
@@ -102,6 +103,21 @@ class PdfBadgeGenerator {
             verticalAlignment = ALIGN_BOTTOM
         }
         leftSide.addCell(twitterCell)
+
+        BarcodeEAN codeEAN = new BarcodeEAN();
+        codeEAN.setCodeType(Barcode.UPCE);
+        codeEAN.setCode("03456781");
+        codeEAN.setFont(null)
+        codeEAN.setBarHeight(15f)
+        PdfPCell barcodeCell = new PdfPCell(codeEAN.createImageWithBarcode(writer.getDirectContent(), null, null))
+        barcodeCell.with {
+            borderWidth = cellBorderWidth
+            paddingLeft = 10
+            paddingBottom = 0
+            verticalAlignment = ALIGN_BOTTOM
+        }
+
+        leftSide.addCell(barcodeCell)
 
         PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
         fixedHeightWrapper.with {
