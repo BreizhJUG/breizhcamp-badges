@@ -21,7 +21,7 @@ class PdfBadgeGenerator {
     private final cellBorderWidth
 
     private final BaseFont badgeFont, symbolFont
-    private final Font nameFont, ticketTypeFont, twitterFont
+    private final Font nameFont, ticketTypeFont, twitterFont, twitterAccountFont
     private final PdfWriter writer
 
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false) {
@@ -32,6 +32,7 @@ class PdfBadgeGenerator {
         badgeFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
         symbolFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
         nameFont = new Font(badgeFont, 16, Font.BOLD, BaseColor.BLACK)
+        twitterAccountFont = new Font(badgeFont, 12, Font.BOLD, BaseColor.BLACK)
         ticketTypeFont = new Font(badgeFont, 14, Font.BOLD, BaseColor.WHITE)
         twitterFont = new Font(symbolFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
 
@@ -89,35 +90,39 @@ class PdfBadgeGenerator {
             borderWidth = cellBorderWidth
         }
         def nameParagraph = new Paragraph(24, "${titleCase(badge.firstname)}\n${titleCase(badge.lastname)}", nameFont)
-        nameParagraph.setSpacingAfter(32)
+        nameParagraph.spacingAfter = 30
         nameAndCompanyCell.addElement(nameParagraph)
         nameAndCompanyCell.addElement(new Paragraph(16, "${badge.company}", nameFont))
         leftSide.addCell(nameAndCompanyCell)
 
-        // Twitter symbol
-        PdfPCell twitterCell = new PdfPCell(new Paragraph("\uF099", twitterFont))
-        twitterCell.with {
+        // Twitter symbol and bar code
+        PdfPCell twitterAndBarCodeCell = new PdfPCell()
+        twitterAndBarCodeCell.with {
             borderWidth = cellBorderWidth
             paddingLeft = 10
-            paddingBottom = 10
+            paddingRight = 10
             verticalAlignment = ALIGN_BOTTOM
         }
-        leftSide.addCell(twitterCell)
-
-        BarcodeEAN codeEAN = new BarcodeEAN();
-        codeEAN.setCodeType(Barcode.UPCE);
-        codeEAN.setCode("03456781");
-        codeEAN.setFont(null)
-        codeEAN.setBarHeight(15f)
-        PdfPCell barcodeCell = new PdfPCell(codeEAN.createImageWithBarcode(writer.getDirectContent(), null, null))
-        barcodeCell.with {
-            borderWidth = cellBorderWidth
-            paddingLeft = 10
-            paddingBottom = 0
-            verticalAlignment = ALIGN_BOTTOM
+        Paragraph twitterParagraph = new Paragraph()
+        twitterParagraph.add(new Phrase("\uF099", twitterFont))
+        if (badge.twitterAccount) {
+            def twitterAccount = badge.twitterAccount.startsWith('@') ? badge.twitterAccount : '@' + badge.twitterAccount
+            twitterParagraph.add(new Phrase(twitterAccount, twitterAccountFont))
         }
+        twitterParagraph.spacingAfter = 10
+        twitterAndBarCodeCell.addElement(twitterParagraph)
 
-        leftSide.addCell(barcodeCell)
+        BarcodeEAN codeEAN = new BarcodeEAN()
+        codeEAN.with {
+            codeType = UPCE
+            code = badge.id
+            font = null // no text below the barcode
+            barHeight = 3f
+        }
+        Image barcode = codeEAN.createImageWithBarcode(writer.getDirectContent(), null, null)
+        twitterAndBarCodeCell.addElement(barcode)
+
+        leftSide.addCell(twitterAndBarCodeCell)
 
         PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
         fixedHeightWrapper.with {
@@ -205,8 +210,27 @@ class PdfBadgeGenerator {
     }
 
     private static String titleCase(String s) {
-        return s == null ? s : s.split(/\s+/).collect {
+
+        if (s == null) {
+            return null
+        }
+
+        // TODO implémentation bancale. Améliorer si possible ou supprimer.
+        def titleCaseString = s.split(/(?i)[^a-z]/).collect {
             it.length() > 0 ? (it[0].toUpperCase() + (it.length() > 1 ? it[1..-1].toLowerCase() : '')) : it
         }.join(' ')
+
+        def result = new StringBuilder(titleCaseString.length())
+
+        titleCaseString.eachWithIndex { c, i ->
+            def original = s[i]
+            if (!(c ==~ /(?i)[a-z]/) && c != original) {
+                result << original
+            } else {
+                result << c
+            }
+        }
+
+        return result.toString().replaceAll(/\s+/, ' ')
     }
 }

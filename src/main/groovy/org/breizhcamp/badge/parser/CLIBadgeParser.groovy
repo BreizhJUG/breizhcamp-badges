@@ -26,7 +26,9 @@ class CLIBadgeParser implements BadgeParser {
             readParam('Prénom ? ', 'firstname', badgeParams, scanner)
             readParam('Email ? ', 'email', badgeParams, scanner)
             readParam('Entreprise ? ', 'company', badgeParams, scanner)
+            readParam('Compte Twitter ? ', 'twitterAccount', badgeParams, scanner)
             readParam('Type de ticket ("Team", "Conf", "Speaker", "Hacker", "Combo" ou "Exposant") ? ', 'ticketType', badgeParams, scanner)
+            readParam('ID ? ', 'id', badgeParams, scanner)
 
             hasNext = askForNext(scanner)
         }

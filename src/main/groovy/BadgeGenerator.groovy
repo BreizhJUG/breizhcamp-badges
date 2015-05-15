@@ -107,7 +107,7 @@ private void showMessageUsageAndQuit(CliBuilder cli, String message = null) {
         println message
     }
     cli.usage()
-    return
+    System.exit(0)
 }
 
 private float[] parseMargins(String marginString, CliBuilder cli) {
