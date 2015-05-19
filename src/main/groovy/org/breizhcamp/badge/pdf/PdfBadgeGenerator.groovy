@@ -112,9 +112,8 @@ class PdfBadgeGenerator {
         twitterParagraph.spacingAfter = 10
         twitterAndBarCodeCell.addElement(twitterParagraph)
 
-        BarcodeEAN codeEAN = new BarcodeEAN()
+        Barcode codeEAN = new Barcode39()
         codeEAN.with {
-            codeType = UPCE
             code = badge.id
             font = null // no text below the barcode
             barHeight = 3f
