@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException as IAE
 @ToString(includeNames = true)
 class PageLayout {
 
-    public static final L4745REV = new PageLayout('A4', [7f, 8.5f, 22f, 22f] as float[], 2, 4)
+    public static final L4745REV = new PageLayout('A4', [7f, 8.5f, 7.5f, 7.5f] as float[], 2, 4)
 
     /**
      * Page size (A4, A5...)
