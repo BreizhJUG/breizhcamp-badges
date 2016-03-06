@@ -12,12 +12,20 @@ class CSVBadgeParser implements BadgeParser {
 
     private CsvIterator linesIterator
 
-    CSVBadgeParser(InputStream input, Map options = [:]) {
+    private final Map fieldMappings
+
+    private final Map valueConverters
+
+    CSVBadgeParser(InputStream input, Map fieldMappings = [:], Map options = [:], Map converters = [:]) {
 
         if (input == null) throw new IAE('input (InputStream) parameter must not be null')
+        if (fieldMappings == null) throw new IAE('fieldMappings Map parameter must not be null')
         if (options == null) throw new IAE('options Map parameter must not be null')
+        if (converters == null) throw new IAE('valueConverters Map parameter must not be null')
 
-        linesIterator = new CsvParser().parse(options, new InputStreamReader(input, options?.encoding ?: 'UTF-8'))
+        this.linesIterator = new CsvParser().parse(options, new InputStreamReader(input, options?.encoding ?: 'UTF-8'))
+        this.fieldMappings = new HashMap(fieldMappings)
+        this.valueConverters = new HashMap(converters)
     }
 
     @Override
@@ -28,9 +36,14 @@ class CSVBadgeParser implements BadgeParser {
     @Override
     Badge next() {
         PropertyMapper mapper = linesIterator.next()
-        def values = mapper.values as List
-        return new Badge(mapper.columns.collectEntries {
-            [(it.key): values[it.value]]
+
+        return new Badge(fieldMappings.collectEntries { entry ->
+            def convertor = valueConverters[entry.value]
+            if (convertor) {
+                return [(entry.value): convertor(mapper[entry.key])]
+            } else {
+                return [(entry.value): mapper[entry.key] ?: null]
+            }
         })
     }
 

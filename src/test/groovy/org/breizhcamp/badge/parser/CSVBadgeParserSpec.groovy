@@ -29,7 +29,7 @@ class CSVBadgeParserSpec extends Specification {
         def input = getClass().getResourceAsStream('nominal.csv')
 
         when:
-        parser = new CSVBadgeParser(input, [:])
+        parser = new CSVBadgeParser(input)
 
         then:
         parser.linesIterator.hasNext()
@@ -39,7 +39,15 @@ class CSVBadgeParserSpec extends Specification {
 
         given:
         def input = getClass().getResourceAsStream(csvFile)
-        parser = new CSVBadgeParser(input, [separator: ','])
+        parser = new CSVBadgeParser(input, [
+                'Identifiant'       : 'id',
+                'Nom participant'   : 'lastname',
+                'Prénom participant': 'firstname',
+                'E-mail Participant': 'email',
+                'Société'           : 'company',
+                'Tarif'             : 'ticketType',
+                'Twitter'           : 'twitterAccount'
+        ], [separator: ','])
 
         expect:
         parser.hasNext()
@@ -51,13 +59,21 @@ class CSVBadgeParserSpec extends Specification {
         thrown(MissingPropertyException)
 
         where:
-        csvFile << ['wrong-headers.csv', 'unsupported-header.csv']
+        csvFile << ['wrong-headers.csv', 'unsupported-header.csv', 'missing-header.csv']
     }
 
     def 'test next() in nominal cases'() {
         given:
         def input = getClass().getResourceAsStream(csvFile)
-        parser = new CSVBadgeParser(input, [separator: ','])
+        parser = new CSVBadgeParser(input, [
+                'Identifiant'       : 'id',
+                'Nom participant'   : 'lastname',
+                'Prénom participant': 'firstname',
+                'E-mail Participant': 'email',
+                'Société'           : 'company',
+                'Tarif'             : 'ticketType',
+                'Twitter'           : 'twitterAccount'
+        ], [separator: ','])
 
         expect:
         parser.hasNext()
@@ -70,15 +86,22 @@ class CSVBadgeParserSpec extends Specification {
         !parser.hasNext()
 
         where:
-        csvFile              || expected
-        'nominal.csv'        || new Badge(lastname: 'Snow', firstname: 'Jon', email: 'jon.snow@castle-black.wes', company: 'The Night\'s Watch', ticketType: 'Speaker')
-        'missing-header.csv' || new Badge(lastname: 'Snow', firstname: 'Jon', email: 'jon.snow@castle-black.wes', company: 'The Night\'s Watch', ticketType: null)
+        csvFile       || expected
+        'nominal.csv' || new Badge(id: 1, lastname: 'Snow', firstname: 'Jon', email: 'jon.snow@castle-black.wes', company: 'The Night\'s Watch', ticketType: 'Speaker')
     }
 
     def 'test encoding traps'() {
         given:
         def input = getClass().getResourceAsStream(csvFile)
-        parser = new CSVBadgeParser(input, [encoding: wrongEncoding])
+        parser = new CSVBadgeParser(input, [
+                'Identifiant'       : 'id',
+                'Nom participant'   : 'lastname',
+                'Prénom participant': 'firstname',
+                'E-mail Participant': 'email',
+                'Société'           : 'company',
+                'Tarif'             : 'ticketType',
+                'Twitter'           : 'twitterAccount'
+        ], [encoding: wrongEncoding])
 
         expect:
         parser.hasNext()
@@ -86,8 +109,8 @@ class CSVBadgeParserSpec extends Specification {
         when:
         Badge content = parser.next()
 
-        then: 'characters are not interpreted correctly'
-        !content.firstname.startsWith(expected)
+        then:
+        thrown(MissingPropertyException)
 
         where:
         csvFile                    | wrongEncoding || expected

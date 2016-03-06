@@ -36,6 +36,8 @@ if (options.h) {
     showMessageUsageAndQuit(cli)
 }
 
+ConfigObject config = new ConfigSlurper().parse(this.class.getResource('/badge-generator-config.groovy'))
+
 // position of first label
 int position = (options.p ?: 0) as int
 
@@ -68,13 +70,17 @@ def margins = options.m ? parseMargins(options.m, cli) : null
 
 // Parser factory initialization
 BadgeParserFactory factory = BadgeParserFactory.create([accept: { Builder builder ->
-    builder.register(null, [get: { new CLIBadgeParser() }] as Supplier<BadgeParser>)
+    builder.register(null, [get: {
+        new CLIBadgeParser(config.badgegenerator.parser.cli.ticketTypes)
+    }] as Supplier<BadgeParser>)
     builder.register('csv', [get: {
-        new CSVBadgeParser(csvFile.newInputStream(), [separator    : separator,
-                                                      quoteChar    : quoteChar,
-                                                      escapeChar   : escapeChar,
-                                                      readFirstLine: !hasHeader,
-                                                      encoding     : charset])
+        new CSVBadgeParser(csvFile.newInputStream(),
+                config.badgegenerator.parser.csv.fieldmapping, [separator    : separator,
+                                                                quoteChar    : quoteChar,
+                                                                escapeChar   : escapeChar,
+                                                                readFirstLine: !hasHeader,
+                                                                encoding     : charset],
+                config.badgegenerator.parser.csv.valueconverters)
     }] as Supplier<BadgeParser>)
 }] as Consumer<Builder>);
 
