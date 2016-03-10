@@ -8,7 +8,10 @@ class CLIBadgeParser implements BadgeParser {
 
     boolean hasNext
 
-    CLIBadgeParser() {
+    List<String> ticketTypes
+
+    CLIBadgeParser(List<String> ticketTypes) {
+        this.ticketTypes = ticketTypes
         hasNext = true
     }
 
@@ -22,13 +25,13 @@ class CLIBadgeParser implements BadgeParser {
         Map<String, String> badgeParams = [:]
 
         new Scanner(System.in).with { scanner ->
+            readParam('ID ? ', 'id', badgeParams, scanner)
             readParam('Nom ? ', 'lastname', badgeParams, scanner)
             readParam('Prénom ? ', 'firstname', badgeParams, scanner)
             readParam('Email ? ', 'email', badgeParams, scanner)
             readParam('Entreprise ? ', 'company', badgeParams, scanner)
             readParam('Compte Twitter ? ', 'twitterAccount', badgeParams, scanner)
-            readParam('Type de ticket ("Team", "Conf", "Speaker", "Hacker", "Combo" ou "Exposant") ? ', 'ticketType', badgeParams, scanner)
-            readParam('ID ? ', 'id', badgeParams, scanner)
+            readParam("Type de ticket (${ticketTypes.join(', ')}) ? ", 'ticketType', badgeParams, scanner)
 
             hasNext = askForNext(scanner)
         }

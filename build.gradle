@@ -8,7 +8,7 @@ apply plugin: 'application'
 apply plugin: 'net.saliman.cobertura'
 
 sourceCompatibility = 1.8
-version = '1.0'
+version = '2.0'
 mainClassName = "BadgeGenerator"
 
 repositories {
@@ -25,9 +25,12 @@ dependencies {
         exclude module: "groovy-all"
     }
     testRuntime 'cglib:cglib-nodep:2.2'
-    testRuntime 'org.slf4j:slf4j-api:1.7.9' // workaround to NoClassDefFoundError on org.slf4j.LoggerFactory with cobertura plugin
+    testRuntime 'org.slf4j:slf4j-api:1.7.9'
+    // workaround to NoClassDefFoundError on org.slf4j.LoggerFactory with cobertura plugin
 }
 
-startScripts { // workaround to https://discuss.gradle.org/t/classpath-in-application-plugin-is-building-always-relative-to-app-home-lib-directory/2012
+startScripts {
+    // workaround to https://discuss.gradle.org/t/classpath-in-application-plugin-is-building-always-relative-to-app-home-lib-directory/2012
     classpath += files('src/dist/lib/assets')
+    classpath += files('src/dist/lib/conf')
 }
