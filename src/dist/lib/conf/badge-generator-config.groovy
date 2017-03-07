@@ -222,7 +222,7 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : breakingBadFormatter,
+                lastname : { s -> "\u00A0${breakingBadFormatter(s)}"},
                 firstname: breakingBadFormatter
         ]
     }
