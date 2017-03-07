@@ -20,8 +20,8 @@ class PdfBadgeGenerator {
 
     private final cellBorderWidth
 
-    private final BaseFont badgeFont, symbolFont
-    private final Font idFont, nameFont, ticketTypeFont, twitterFont, twitterAccountFont
+    private final BaseFont badgeBaseFont, symbolBaseFont, nameBaseFont
+    private final Font idFont, nameFont, companyFont, ticketTypeFont, twitterFont, twitterAccountFont
     private final PdfWriter writer
 
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false) {
@@ -29,13 +29,15 @@ class PdfBadgeGenerator {
         if (pageLayout == null) throw new IAE('pageLayout must not be null')
         if (outputStream == null) throw new IAE('outputStream must not be null')
 
-        badgeFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
-        symbolFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
-        idFont = new Font(badgeFont, 8, Font.NORMAL, BaseColor.GRAY)
-        nameFont = new Font(badgeFont, 16, Font.BOLD, BaseColor.BLACK)
-        twitterAccountFont = new Font(badgeFont, 12, Font.BOLD, BaseColor.BLACK)
-        ticketTypeFont = new Font(badgeFont, 14, Font.BOLD, BaseColor.WHITE)
-        twitterFont = new Font(symbolFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
+        badgeBaseFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
+        symbolBaseFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
+        nameBaseFont = createFont('/fonts/heart-breaking-bad/Heart Breaking Bad.otf', IDENTITY_H, EMBEDDED)
+        idFont = new Font(badgeBaseFont, 8, Font.NORMAL, BaseColor.GRAY)
+        nameFont = new Font(nameBaseFont, 30, Font.BOLD, BaseColor.BLACK)
+        companyFont = new Font(badgeBaseFont, 16, Font.NORMAL, BaseColor.GRAY)
+        twitterAccountFont = new Font(badgeBaseFont, 12, Font.BOLD, BaseColor.BLACK)
+        ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.WHITE)
+        twitterFont = new Font(symbolBaseFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
 
         this.pageLayout = pageLayout
 
@@ -100,10 +102,10 @@ class PdfBadgeGenerator {
             paddingLeft = 10
             borderWidth = cellBorderWidth
         }
-        def nameParagraph = new Paragraph(24, "${badge.firstname}\n${badge.lastname}", nameFont)
+        def nameParagraph = new Paragraph(24, "${badge.firstname}\n\u00A0\u00A0\u00A0${badge.lastname}", nameFont)
         nameParagraph.spacingAfter = 20
         nameAndCompanyCell.addElement(nameParagraph)
-        nameAndCompanyCell.addElement(new Paragraph(16, badge.company, nameFont))
+        nameAndCompanyCell.addElement(new Paragraph(16, badge.company, companyFont))
         leftSide.addCell(nameAndCompanyCell)
 
         // Twitter symbol and bar code
