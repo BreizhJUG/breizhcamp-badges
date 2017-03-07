@@ -24,16 +24,19 @@ class PdfBadgeGenerator {
     private final Font idFont, nameFont, companyFont, ticketTypeFont, twitterFont, twitterAccountFont
     private final PdfWriter writer
 
-    PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false) {
+    private final Map formatters
+
+    PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false, Map formatters = [:]) {
 
         if (pageLayout == null) throw new IAE('pageLayout must not be null')
         if (outputStream == null) throw new IAE('outputStream must not be null')
+        if (formatters == null) throw new IAE('formatters must not be null')
 
         badgeBaseFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
         symbolBaseFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
         nameBaseFont = createFont('/fonts/heart-breaking-bad/Heart Breaking Bad.otf', IDENTITY_H, EMBEDDED)
         idFont = new Font(badgeBaseFont, 8, Font.NORMAL, BaseColor.GRAY)
-        nameFont = new Font(nameBaseFont, 30, Font.BOLD, BaseColor.BLACK)
+        nameFont = new Font(nameBaseFont, 30, Font.NORMAL, BaseColor.BLACK)
         companyFont = new Font(badgeBaseFont, 16, Font.NORMAL, BaseColor.GRAY)
         twitterAccountFont = new Font(badgeBaseFont, 12, Font.BOLD, BaseColor.BLACK)
         ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.WHITE)
@@ -43,6 +46,7 @@ class PdfBadgeGenerator {
 
         document = [pageLayout.format, pageLayout.margins.collect(milliToPoints)].flatten() as Document
         writer = PdfWriter.getInstance(document, outputStream)
+        this.formatters = formatters
 
         cellBorderWidth = debug ? 1f : 0f
     }
@@ -102,7 +106,9 @@ class PdfBadgeGenerator {
             paddingLeft = 10
             borderWidth = cellBorderWidth
         }
-        def nameParagraph = new Paragraph(24, "${badge.firstname}\n\u00A0\u00A0\u00A0${badge.lastname}", nameFont)
+        def firstname = formatValue(badge.firstname, 'firstname')
+        def lastname = formatValue(badge.lastname, 'lastname')
+        def nameParagraph = new Paragraph(24, "${firstname}\n${lastname}", nameFont)
         nameParagraph.spacingAfter = 20
         nameAndCompanyCell.addElement(nameParagraph)
         nameAndCompanyCell.addElement(new Paragraph(16, badge.company, companyFont))
@@ -227,5 +233,10 @@ class PdfBadgeGenerator {
 
     private double calculateLabelHeight() {
         (pageLayout.format.height - document.topMargin() - document.bottomMargin()) / pageLayout.rows
+    }
+
+    private formatValue(String value, String key) {
+        def formatter = formatters[key]
+        return formatter ? formatter(value) : value
     }
 }

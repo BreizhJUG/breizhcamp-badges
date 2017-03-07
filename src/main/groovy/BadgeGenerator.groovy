@@ -93,7 +93,7 @@ if (margins) {
     pageLayout.margins = margins
 }
 
-PdfBadgeGenerator generator = new PdfBadgeGenerator(new FileOutputStream(pdfPath), pageLayout, debug)
+PdfBadgeGenerator generator = new PdfBadgeGenerator(new FileOutputStream(pdfPath), pageLayout, debug, config.badgegenerator.pdfwriter.valueformatters)
 
 generator.startDocument()
 
