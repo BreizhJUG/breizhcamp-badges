@@ -207,7 +207,9 @@ badgegenerator {
                             if (value.startsWith('http')) {
                                 return '@' + value.substring(value.lastIndexOf('/') + 1)
                             }
-                            if (!value.startsWith('@')) {
+                            if (value.startsWith('@')) {
+                                return value
+                            } else {
                                 return '@' + value
                             }
                         }
@@ -222,7 +224,7 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : { s -> "\u00A0${breakingBadFormatter(s)}"},
+                lastname : { s -> "\u00A0${breakingBadFormatter(s)}" },
                 firstname: breakingBadFormatter
         ]
     }
