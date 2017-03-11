@@ -181,7 +181,7 @@ class PdfBadgeGenerator {
 
         // QRCode cell
         PdfPCell qrcodeCell = new PdfPCell(new BarcodeQRCode(qrCodeTextWriter.toString(),
-                100, 100,
+                80, 80,
                 [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image)
         qrcodeCell.with {
             horizontalAlignment = ALIGN_CENTER
