@@ -8,7 +8,7 @@ apply plugin: 'application'
 apply plugin: 'net.saliman.cobertura'
 
 sourceCompatibility = 1.8
-version = '2.0'
+version = '3.0'
 mainClassName = "BadgeGenerator"
 
 repositories {

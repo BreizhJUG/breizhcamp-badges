@@ -1,3 +1,5 @@
+import java.text.Normalizer
+
 def titleCase = { s ->
     if (s == null) {
         return null
@@ -19,6 +21,157 @@ def titleCase = { s ->
     }
 
     return result.toString().replaceAll(/\s+/, ' ')
+}
+
+def unsupportedChars = ['A', 'D', 'E', 'G', 'J', 'L', 'M', 'Q', 'R', 'T', 'X', 'Z']
+
+def symbolsChars = [
+        'al' : 'A',
+        'b'  : 'B',
+        'c'  : 'C',
+        'db' : 'D',
+        'eu' : 'E',
+        'f'  : 'F',
+        'ga' : 'G',
+        'h'  : 'H',
+        'i'  : 'I',
+        'dy' : 'J',
+        'k'  : 'K',
+        'li' : 'L',
+        'mg' : 'M',
+        'n'  : 'N',
+        'o'  : 'O',
+        'p'  : 'P',
+        'uuq': 'Q',
+        'rb' : 'R',
+        's'  : 'S',
+        'ti' : 'T',
+        'u'  : 'U',
+        'v'  : 'V',
+        'w'  : 'W',
+        'xe' : 'X',
+        'y'  : 'Y',
+        'zn' : 'Z',
+        'ni' : '0',
+        'cu' : '1',
+        'ge' : '2',
+        'as' : '3',
+        'se' : '4',
+        'br' : '5',
+        'ba' : '6',
+        'kr' : '7',
+        'sr' : '8',
+        'zr' : '9',
+        'ne' : '$',
+        'pt' : '¢',
+        'au' : '£',
+        'tl' : '¥',
+        'hg' : '¤',
+        'sc' : '+',
+        'mn' : '-',
+        'ca' : '*',
+        'co' : '/',
+        'ru' : '=',
+        'na' : '%',
+        'be' : '#',
+        'at' : '@',
+        'si' : '&',
+        'te' : '_',
+        'cl' : '(',
+        'ar' : ')',
+        'cr' : ',',
+        'fe' : '.',
+        'mo' : ';',
+        'nb' : ':',
+        'sm' : '¿',
+        'pd' : '?',
+        'ir' : '¡',
+        'he' : '!',
+        'in' : '\\',
+        'ta' : '|',
+        'hf' : '{',
+        're' : '}',
+        'tc' : '<',
+        'rh' : '>',
+        'cd' : '[',
+        'sn' : ']',
+        'bi' : '§',
+        'uup': '¶',
+        'uut': 'µ',
+        'cs' : '`',
+        'sb' : '^',
+        'os' : '~',
+        'ag' : '©',
+        'rf' : '®',
+        'gd' : 'À',
+        'tb' : 'Á',
+        'ho' : 'Â',
+        'ds' : 'Ã',
+        'er' : 'Ä',
+        'tm' : 'Å',
+        'yb' : 'Æ',
+        'lu' : 'Ç',
+        'ac' : 'È',
+        'th' : 'É',
+        'pa' : 'Ê',
+        'np' : 'Ë',
+        'pu' : 'Ì',
+        'am' : 'Í',
+        'cm' : 'Î',
+        'bk' : 'Ï',
+        'es' : 'Ñ',
+        'fm' : 'Ò',
+        'md' : 'Ó',
+        'no' : 'Ô',
+        'lr' : 'Õ'
+]
+
+def breakingBadFormatter = { s ->
+    def onlyLetters = s.replaceAll(/(?i)[^\p{L}]/, ' ') // replace everything but letters by a space
+    def noAccents = Normalizer
+            .normalize(onlyLetters, Normalizer.Form.NFD)
+            .replaceAll(/\p{InCombiningDiacriticalMarks}+/, '') // remove all accents
+
+
+    if (!unsupportedChars.find { noAccents.contains(it) }) { // if no unsupported char is found
+        return noAccents
+    } else {
+        def lowerCased = noAccents.toLowerCase() // lower case original string
+
+        def symbolIndex = symbolsChars.keySet().collectEntries {
+            // find the chemistry symbol char sequence closest to the beginning of the string
+            [(it): lowerCased.indexOf(it)]
+        }.findAll {
+            it.value != -1
+        }.inject([:]) { result, symbol, index ->
+            def values = result.values() as List
+            if (values) {
+                values[0] < index ? result : [(symbol): index]
+            } else {
+                [(symbol): index]
+            }
+        }
+
+        if (symbolIndex) { // only one key value pair in symbolIndex
+            def symbol = (symbolIndex.keySet() as List)[0]
+            def index = (symbolIndex.values() as List)[0]
+            def result = new StringBuilder()
+
+            def i = 0
+            while (i < lowerCased.length()) {
+                if (i == index) {
+                    result << symbolsChars[symbol]
+                    i += symbol.length()
+                } else {
+                    result << lowerCased[i]
+                    i++
+                }
+            }
+            return result.toString()
+        } else {
+            return lowerCased
+        }
+    }
 }
 
 def _ticketTypes = ['Combo', 'Université', 'Exposant', 'Conf', 'Team']
@@ -54,7 +207,9 @@ badgegenerator {
                             if (value.startsWith('http')) {
                                 return '@' + value.substring(value.lastIndexOf('/') + 1)
                             }
-                            if (!value.startsWith('@')) {
+                            if (value.startsWith('@')) {
+                                return value
+                            } else {
                                 return '@' + value
                             }
                         }
@@ -66,5 +221,11 @@ badgegenerator {
         cli {
             ticketTypes = _ticketTypes
         }
+    }
+    pdfwriter {
+        valueformatters = [
+                lastname : { s -> "\u00A0${breakingBadFormatter(s)}" },
+                firstname: breakingBadFormatter
+        ]
     }
 }
