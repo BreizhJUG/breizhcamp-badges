@@ -26,6 +26,8 @@ class PdfBadgeGenerator {
 
     private final Map formatters
 
+    private final Random angleRandom = new Random()
+
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false, Map formatters = [:]) {
 
         if (pageLayout == null) throw new IAE('pageLayout must not be null')
@@ -129,6 +131,7 @@ class PdfBadgeGenerator {
         twitterImage.with {
             scaleAbsoluteHeight(16)
             scaleAbsoluteWidth(16)
+            rotationDegrees = angleRandom.nextFloat() * 360
         }
         twitterIcon.add(new Chunk(twitterImage, 0, -5, false))
         twitterIcon.add(new Chunk("\u00A0"))
