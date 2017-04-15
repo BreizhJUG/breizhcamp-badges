@@ -180,26 +180,27 @@ badgegenerator {
     parser {
         csv {
             fieldmapping = [
-                    'Identifiant'       : 'id',
-                    'Nom participant'   : 'lastname',
-                    'Prénom participant': 'firstname',
-                    'E-mail Participant': 'email',
-                    'Société'           : 'company',
-                    'Tarif'             : 'ticketType',
-                    'Twitter'           : 'twitterAccount'
+                    'Identifiant'        : 'id',
+                    'Nom participant'    : 'lastname',
+                    'Prénom participant' : 'firstname',
+                    'E-mail Participant' : 'email',
+                    'Societe Participant': 'company',
+                    'Tarif'              : 'ticketType',
+                    'twitter'            : 'twitterAccount'
             ]
             valueconverters = [
                     ticketType    : { value ->
                         return [
-                                'Billets sponsor'            : _ticketTypes[0],
-                                'Université (mercredi)'      : _ticketTypes[1],
-                                'exposant'                   : _ticketTypes[2],
+                                'bénévoles'                  : _ticketTypes[4],
+                                'Combo 3 jours'              : _ticketTypes[0],
                                 'Conférence (jeudi+vendredi)': _ticketTypes[3],
-                                'Combo (3 jours)'            : _ticketTypes[0],
-                                'Billet speaker'             : _ticketTypes[0],
-                                'Billet organisateur'        : _ticketTypes[4],
-                                'Supporter'                  : _ticketTypes[0],
-                                'Early bird (3 jours)'       : _ticketTypes[0]
+                                'exposant'                   : _ticketTypes[2],
+                                'Fanboy (3 jours)'           : _ticketTypes[0],
+                                'last minute'                : _ticketTypes[0],
+                                'Organisateur'               : _ticketTypes[4],
+                                'Speaker'                    : _ticketTypes[0],
+                                'sponsor'                    : _ticketTypes[0],
+                                'Université (mercredi)'      : _ticketTypes[1]
                         ][value]
                     },
                     twitterAccount: { String value ->
