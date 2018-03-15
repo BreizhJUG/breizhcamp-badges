@@ -20,8 +20,8 @@ class PdfBadgeGenerator {
 
     private final cellBorderWidth
 
-    private final BaseFont badgeBaseFont, symbolBaseFont, nameBaseFont
-    private final Font idFont, nameFont, companyFont, ticketTypeFont, twitterFont, twitterAccountFont
+    private final BaseFont badgeBaseFont, symbolBaseFont, nameBaseFont, twitterBaseFont
+    private final Font idFont, nameFont, companyFont, ticketTypeFont, twitterAccountFont
     private final PdfWriter writer
 
     private final Map formatters
@@ -37,12 +37,12 @@ class PdfBadgeGenerator {
         badgeBaseFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
         symbolBaseFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
         nameBaseFont = createFont('/fonts/BTTF/BTTF.ttf', IDENTITY_H, EMBEDDED)
+        twitterBaseFont = createFont('/fonts/Impact Label/Impact Label.ttf', IDENTITY_H, EMBEDDED)
         idFont = new Font(badgeBaseFont, 8, Font.NORMAL, BaseColor.GRAY)
         nameFont = new Font(nameBaseFont, 13, Font.NORMAL, BaseColor.BLACK)
         companyFont = new Font(badgeBaseFont, 12, Font.NORMAL, BaseColor.GRAY)
-        twitterAccountFont = new Font(badgeBaseFont, 12, Font.BOLD, BaseColor.BLACK)
+        twitterAccountFont = new Font(twitterBaseFont, 12, Font.NORMAL, new BaseColor(130, 23, 29))
         ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.WHITE)
-        twitterFont = new Font(symbolBaseFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
 
         this.pageLayout = pageLayout
 
@@ -174,6 +174,22 @@ class PdfBadgeGenerator {
             borderWidth = cellBorderWidth
         }
         rightSide.addCell(idCell)
+
+        // Twitter account
+        def twitterAccount
+        if (badge.twitterAccount) {
+            twitterAccount = badge.twitterAccount.startsWith('@') ? badge.twitterAccount : '@' + badge.twitterAccount
+        } else {
+            twitterAccount = '\u00A0'
+        }
+        PdfPCell twitterCell = new PdfPCell(new Phrase(twitterAccount, twitterAccountFont))
+        twitterCell.with {
+            paddingTop = 105
+            borderWidth = cellBorderWidth
+            horizontalAlignment = ALIGN_CENTER
+            verticalAlignment = ALIGN_BOTTOM
+        }
+        rightSide.addCell(twitterCell)
 
         // Ticket type
         String ticketType = badge.ticketType
