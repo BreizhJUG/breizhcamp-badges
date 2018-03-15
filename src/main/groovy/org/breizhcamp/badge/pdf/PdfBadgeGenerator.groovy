@@ -90,16 +90,6 @@ class PdfBadgeGenerator {
 
         PdfPTable leftSide = generateSideContentTable()
 
-        // Badge ID
-        PdfPCell idCell = new PdfPCell(new Phrase(badge.id, idFont))
-        idCell.with {
-            horizontalAlignment = ALIGN_RIGHT
-            verticalAlignment = ALIGN_TOP
-            paddingRight = 5
-            borderWidth = cellBorderWidth
-        }
-        leftSide.addCell(idCell)
-
         // Name and company
         PdfPCell nameAndCompanyCell = new PdfPCell()
         nameAndCompanyCell.with {
@@ -124,17 +114,17 @@ class PdfBadgeGenerator {
 
         // QRCode cell
         def qrCodeImage = new BarcodeQRCode(qrCodeTextWriter.toString(),
-                110, 110,
+                140, 140,
                 [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image
         qrCodeImage.alignment = Image.TEXTWRAP
-        PdfPCell qrcodeCell = new PdfPCell(qrCodeImage)
+/*        PdfPCell qrcodeCell = new PdfPCell(qrCodeImage)
         qrcodeCell.with {
             paddingTop = 0
             horizontalAlignment = ALIGN_CENTER
             verticalAlignment = ALIGN_BOTTOM
             borderWidth = cellBorderWidth
         }
-        leftSide.addCell(qrcodeCell)
+        leftSide.addCell(qrcodeCell)*/
 
         // Twitter symbol and bar code
 /*        PdfPCell twitterCell = new PdfPCell()
@@ -155,17 +145,35 @@ class PdfBadgeGenerator {
 
         leftSide.addCell(twitterCell)*/
 
-        PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
+/*        PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
         fixedHeightWrapper.with {
             fixedHeight = calculateLabelHeight()
             borderWidth = cellBorderWidth
         }
-        return fixedHeightWrapper
+        return fixedHeightWrapper*/
+
+        PdfPCell backgroundWrapper = new PdfPCell(leftSide)
+        backgroundWrapper.with {
+            cellEvent = new ImageBackgroundEvent(Image.getInstance(qrCodeImage), false)
+            fixedHeight = calculateLabelHeight()
+            borderWidth = cellBorderWidth
+        }
+        return backgroundWrapper
     }
 
     private PdfPCell generateRightSide(Badge badge) {
 
         PdfPTable rightSide = generateSideContentTable()
+
+        // Badge ID
+        PdfPCell idCell = new PdfPCell(new Phrase(badge.id, idFont))
+        idCell.with {
+            horizontalAlignment = ALIGN_LEFT
+            verticalAlignment = ALIGN_TOP
+            paddingLeft = 0
+            borderWidth = cellBorderWidth
+        }
+        rightSide.addCell(idCell)
 
         // Ticket type
         String ticketType = badge.ticketType

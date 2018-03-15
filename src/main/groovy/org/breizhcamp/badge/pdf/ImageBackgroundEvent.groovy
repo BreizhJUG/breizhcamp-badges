@@ -12,15 +12,21 @@ import com.itextpdf.text.pdf.PdfPTable
 class ImageBackgroundEvent implements PdfPCellEvent {
 
     protected Image image
+    private boolean fitToRectangle
 
-    public ImageBackgroundEvent(Image image) {
+
+    public ImageBackgroundEvent(Image image,
+                                boolean fitToRectangle = true) {
         this.image = image
+        this.fitToRectangle = fitToRectangle
     }
 
     public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
         try {
             PdfContentByte cb = canvases[PdfPTable.BACKGROUNDCANVAS]
-            image.scaleAbsolute(position)
+            if (fitToRectangle) {
+                image.scaleAbsolute(position)
+            }
             image.setAbsolutePosition(position.getLeft(), position.getBottom())
             cb.addImage(image)
         } catch (DocumentException e) {

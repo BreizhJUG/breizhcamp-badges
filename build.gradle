@@ -18,7 +18,7 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy:2.4.3'
     compile 'com.xlson.groovycsv:groovycsv:1.0'
-    compile 'com.itextpdf:itextpdf:5.5.5'
+    compile 'com.itextpdf:itextpdf:5.5.13'
     runtime 'commons-cli:commons-cli:1.2'
 
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
