@@ -36,10 +36,10 @@ class PdfBadgeGenerator {
 
         badgeBaseFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
         symbolBaseFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
-        nameBaseFont = createFont('/fonts/heart-breaking-bad/Heart Breaking Bad.otf', IDENTITY_H, EMBEDDED)
+        nameBaseFont = createFont('/fonts/BTTF/BTTF.ttf', IDENTITY_H, EMBEDDED)
         idFont = new Font(badgeBaseFont, 8, Font.NORMAL, BaseColor.GRAY)
-        nameFont = new Font(nameBaseFont, 30, Font.NORMAL, BaseColor.BLACK)
-        companyFont = new Font(badgeBaseFont, 16, Font.NORMAL, BaseColor.GRAY)
+        nameFont = new Font(nameBaseFont, 13, Font.NORMAL, BaseColor.BLACK)
+        companyFont = new Font(badgeBaseFont, 12, Font.NORMAL, BaseColor.GRAY)
         twitterAccountFont = new Font(badgeBaseFont, 12, Font.BOLD, BaseColor.BLACK)
         ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.WHITE)
         twitterFont = new Font(symbolBaseFont, 16, Font.NORMAL, new BaseColor(58, 170, 225)) // Twitter color
@@ -110,39 +110,50 @@ class PdfBadgeGenerator {
         }
         def firstname = formatValue(badge.firstname, 'firstname')
         def lastname = formatValue(badge.lastname, 'lastname')
-        def nameParagraph = new Paragraph(24, "${firstname}\n${lastname}", nameFont)
-        nameParagraph.spacingAfter = 20
+        def nameParagraph = new Paragraph(16, "${firstname}\n${lastname}", nameFont)
+        nameParagraph.spacingAfter = 8
         nameAndCompanyCell.addElement(nameParagraph)
-        nameAndCompanyCell.addElement(new Paragraph(16, badge.company, companyFont))
+        nameAndCompanyCell.addElement(new Paragraph(12, badge.company, companyFont))
         leftSide.addCell(nameAndCompanyCell)
 
+        // QRCode content
+        StringWriter qrCodeTextWriter = new StringWriter()
+        CSVWriter csvWriter = new CSVWriter(qrCodeTextWriter, ',' as char, '"' as char, '\\' as char)
+        csvWriter.writeNext([badge.lastname, badge.firstname, badge.company, badge.email] as String[])
+        csvWriter.flush()
+
+        // QRCode cell
+        def qrCodeImage = new BarcodeQRCode(qrCodeTextWriter.toString(),
+                110, 110,
+                [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image
+        qrCodeImage.alignment = Image.TEXTWRAP
+        PdfPCell qrcodeCell = new PdfPCell(qrCodeImage)
+        qrcodeCell.with {
+            paddingTop = 0
+            horizontalAlignment = ALIGN_CENTER
+            verticalAlignment = ALIGN_BOTTOM
+            borderWidth = cellBorderWidth
+        }
+        leftSide.addCell(qrcodeCell)
+
         // Twitter symbol and bar code
-        PdfPCell twitterCell = new PdfPCell()
+/*        PdfPCell twitterCell = new PdfPCell()
         twitterCell.with {
             borderWidth = cellBorderWidth
             paddingLeft = 10
             paddingRight = 10
             verticalAlignment = ALIGN_BOTTOM
-            noWrap = true
         }
         Paragraph twitterParagraph = new Paragraph()
-        def twitterIcon = new Phrase()
-        def twitterImage = Image.getInstance(this.class.getResource('/images/twitter.png'))
-        twitterImage.with {
-            scaleAbsoluteHeight(16)
-            scaleAbsoluteWidth(16)
-            rotationDegrees = angleRandom.nextFloat() * 360
-        }
-        twitterIcon.add(new Chunk(twitterImage, 0, -5, false))
-        twitterIcon.add(new Chunk("\u00A0"))
-        twitterParagraph.add(twitterIcon)
+        twitterParagraph.add(new Phrase("\uF099", twitterFont))
         if (badge.twitterAccount) {
-            twitterParagraph.add(new Phrase(badge.twitterAccount, twitterAccountFont))
+            def twitterAccount = badge.twitterAccount.startsWith('@') ? badge.twitterAccount : '@' + badge.twitterAccount
+            twitterParagraph.add(new Phrase(twitterAccount, twitterAccountFont))
         }
         twitterParagraph.spacingAfter = 10
         twitterCell.addElement(twitterParagraph)
 
-        leftSide.addCell(twitterCell)
+        leftSide.addCell(twitterCell)*/
 
         PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
         fixedHeightWrapper.with {
@@ -161,29 +172,11 @@ class PdfBadgeGenerator {
         PdfPCell ticketTypeCell = new PdfPCell(new Phrase(ticketType, ticketTypeFont))
         ticketTypeCell.with {
             horizontalAlignment = ALIGN_RIGHT
-            paddingTop = 10
+            paddingTop = 45
             paddingRight = 10
-            paddingBottom = 10
             borderWidth = cellBorderWidth
         }
         rightSide.addCell(ticketTypeCell)
-
-        // QRCode content
-        StringWriter qrCodeTextWriter = new StringWriter()
-        CSVWriter csvWriter = new CSVWriter(qrCodeTextWriter, ',' as char, '"' as char, '\\' as char)
-        csvWriter.writeNext([badge.lastname, badge.firstname, badge.company, badge.email] as String[])
-        csvWriter.flush()
-
-        // QRCode cell
-        PdfPCell qrcodeCell = new PdfPCell(new BarcodeQRCode(qrCodeTextWriter.toString(),
-                50, 50,
-                [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image)
-        qrcodeCell.with {
-            horizontalAlignment = ALIGN_CENTER
-            verticalAlignment = ALIGN_MIDDLE
-            borderWidth = cellBorderWidth
-        }
-        rightSide.addCell(qrcodeCell)
 
         PdfPCell backgroundWrapper = new PdfPCell(rightSide)
         backgroundWrapper.with {

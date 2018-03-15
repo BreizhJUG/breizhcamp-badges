@@ -23,8 +23,6 @@ def titleCase = { s ->
     return result.toString().replaceAll(/\s+/, ' ')
 }
 
-def unsupportedChars = ['A', 'D', 'E', 'G', 'J', 'L', 'M', 'Q', 'R', 'T', 'X', 'Z']
-
 def symbolsChars = [
         'al' : 'A',
         'b'  : 'B',
@@ -126,55 +124,14 @@ def symbolsChars = [
         'lr' : 'Õ'
 ]
 
-def breakingBadFormatter = { s ->
+def bttfFormatter = { s ->
     def onlyLetters = s.replaceAll(/(?i)[^\p{L}]/, ' ') // replace everything but letters by a space
     def noAccents = Normalizer
             .normalize(onlyLetters, Normalizer.Form.NFD)
             .replaceAll(/\p{InCombiningDiacriticalMarks}+/, '') // remove all accents
-
-
-    if (!unsupportedChars.find { noAccents.contains(it) }) { // if no unsupported char is found
-        return noAccents
-    } else {
-        def lowerCased = noAccents.toLowerCase() // lower case original string
-
-        def symbolIndex = symbolsChars.keySet().collectEntries {
-            // find the chemistry symbol char sequence closest to the beginning of the string
-            [(it): lowerCased.indexOf(it)]
-        }.findAll {
-            it.value != -1
-        }.inject([:]) { result, symbol, index ->
-            def values = result.values() as List
-            if (values) {
-                values[0] < index ? result : [(symbol): index]
-            } else {
-                [(symbol): index]
-            }
-        }
-
-        if (symbolIndex) { // only one key value pair in symbolIndex
-            def symbol = (symbolIndex.keySet() as List)[0]
-            def index = (symbolIndex.values() as List)[0]
-            def result = new StringBuilder()
-
-            def i = 0
-            while (i < lowerCased.length()) {
-                if (i == index) {
-                    result << symbolsChars[symbol]
-                    i += symbol.length()
-                } else {
-                    result << lowerCased[i]
-                    i++
-                }
-            }
-            return result.toString()
-        } else {
-            return lowerCased
-        }
-    }
 }
 
-def _ticketTypes = ['Combo', 'Université', 'Exposant', 'Conf', 'Team']
+def _ticketTypes = ['Combo', 'Mercredi', 'Exposant', 'Conf', 'Speaker', 'Jeudi', 'Vendredi']
 
 badgegenerator {
     parser {
@@ -191,16 +148,18 @@ badgegenerator {
             valueconverters = [
                     ticketType    : { value ->
                         return [
-                                'bénévoles'                  : _ticketTypes[4],
+                                'bénévoles'                  : _ticketTypes[0],
                                 'Combo 3 jours'              : _ticketTypes[0],
                                 'Conférence (jeudi+vendredi)': _ticketTypes[3],
                                 'exposant'                   : _ticketTypes[2],
                                 'Fanboy (3 jours)'           : _ticketTypes[0],
                                 'last minute'                : _ticketTypes[0],
-                                'Organisateur'               : _ticketTypes[4],
-                                'Speaker'                    : _ticketTypes[0],
+                                'organisateur'               : _ticketTypes[0],
+                                'Speaker'                    : _ticketTypes[4],
                                 'sponsor'                    : _ticketTypes[0],
-                                'Université (mercredi)'      : _ticketTypes[1]
+                                'Université (mercredi)'      : _ticketTypes[1],
+                                'Jeudi'                      : _ticketTypes[5],
+                                'Vendredi'                   : _ticketTypes[6]
                         ][value]
                     },
                     twitterAccount: { String value ->
@@ -215,8 +174,8 @@ badgegenerator {
                             }
                         }
                     },
-                    firstname     : titleCase,
-                    lastname      : titleCase
+                    firstname     : { String value -> value.toUpperCase() },
+                    lastname      : { String value -> value.toLowerCase() }
             ]
         }
         cli {
@@ -225,8 +184,8 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : { s -> "\u00A0${breakingBadFormatter(s)}" },
-                firstname: breakingBadFormatter
+                lastname : { s -> s ? "\u00A0>${s}" : '' },
+                firstname: { s -> "${s}<" }
         ]
     }
 }

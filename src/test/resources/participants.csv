@@ -1,10 +1,10 @@
-Identifiant,Nom participant,Prénom participant,E-mail Participant,Société,Tarif,Twitter
-1,Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Billets sponsor,@rbaratheon
+Identifiant,Nom participant,Prénom participant,E-mail Participant,Societe Participant,Tarif,twitter
+1,Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Jeudi,@rbaratheon
 2,STARK,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Université (mercredi),@beheadard_stark
 3,Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,exposant,winteriscoming
 4,Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Conférence (jeudi+vendredi),
-5,Stark,Sansa,sansa.stark@the-eyrie.wes,,Combo (3 jours),mcvdlm
-6,Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Billet speaker,typhoonborn
-7,,Varys,varys@nsa.gouv.wes,Butterfly in chief,Billet organisateur,spiderman
-8,Others,The,the.others@beyond-the-wall.wes,Häagen-Dazs,Supporter,misterfreeze
-9,Hodor,Hodor,hodor.hodor@hodor.hodor,Les Déménageurs Bretons,Early bird (3 jours),hodor
+5,Stark,Sansa,sansa.stark@the-eyrie.wes,,Vendredi,mcvdlm
+6,Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Speaker,typhoonborn
+7,,Varys,varys@nsa.gouv.wes,Butterfly in chief,organisateur,spiderman
+8,Others,The,the.others@beyond-the-wall.wes,Häagen-Dazs,Fanboy (3 jours),misterfreeze
+9,Hodor,Hodor,hodor.hodor@hodor.hodor,Les Déménageurs Bretons,Combo 3 jours,hodor
