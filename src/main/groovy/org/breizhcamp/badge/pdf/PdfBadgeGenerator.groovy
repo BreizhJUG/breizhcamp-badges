@@ -170,37 +170,34 @@ class PdfBadgeGenerator {
         idCell.with {
             horizontalAlignment = ALIGN_LEFT
             verticalAlignment = ALIGN_TOP
-            paddingLeft = 0
             borderWidth = cellBorderWidth
         }
         rightSide.addCell(idCell)
-
-        // Twitter account
-        def twitterAccount
-        if (badge.twitterAccount) {
-            twitterAccount = badge.twitterAccount.startsWith('@') ? badge.twitterAccount : '@' + badge.twitterAccount
-        } else {
-            twitterAccount = '\u00A0'
-        }
-        PdfPCell twitterCell = new PdfPCell(new Phrase(twitterAccount, twitterAccountFont))
-        twitterCell.with {
-            paddingTop = 105
-            borderWidth = cellBorderWidth
-            horizontalAlignment = ALIGN_CENTER
-            verticalAlignment = ALIGN_BOTTOM
-        }
-        rightSide.addCell(twitterCell)
 
         // Ticket type
         String ticketType = badge.ticketType
         PdfPCell ticketTypeCell = new PdfPCell(new Phrase(ticketType, ticketTypeFont))
         ticketTypeCell.with {
-            horizontalAlignment = ALIGN_RIGHT
-            paddingTop = 45
-            paddingRight = 10
+            horizontalAlignment = ALIGN_CENTER
             borderWidth = cellBorderWidth
         }
         rightSide.addCell(ticketTypeCell)
+
+        // Twitter account
+        def twitterAccount
+        if (badge.twitterAccount) {
+            twitterAccount = badge.twitterAccount
+        } else {
+            twitterAccount = ''
+        }
+        PdfPCell twitterCell = new PdfPCell(new Phrase(twitterAccount, twitterAccountFont))
+        twitterCell.with {
+            borderWidth = cellBorderWidth
+            horizontalAlignment = ALIGN_CENTER
+            verticalAlignment = ALIGN_BOTTOM
+            paddingBottom = 55
+        }
+        rightSide.addCell(twitterCell)
 
         PdfPCell backgroundWrapper = new PdfPCell(rightSide)
         backgroundWrapper.with {
