@@ -117,40 +117,6 @@ class PdfBadgeGenerator {
                 140, 140,
                 [(EncodeHintType.CHARACTER_SET): 'UTF-8']).image
         qrCodeImage.alignment = Image.TEXTWRAP
-/*        PdfPCell qrcodeCell = new PdfPCell(qrCodeImage)
-        qrcodeCell.with {
-            paddingTop = 0
-            horizontalAlignment = ALIGN_CENTER
-            verticalAlignment = ALIGN_BOTTOM
-            borderWidth = cellBorderWidth
-        }
-        leftSide.addCell(qrcodeCell)*/
-
-        // Twitter symbol and bar code
-/*        PdfPCell twitterCell = new PdfPCell()
-        twitterCell.with {
-            borderWidth = cellBorderWidth
-            paddingLeft = 10
-            paddingRight = 10
-            verticalAlignment = ALIGN_BOTTOM
-        }
-        Paragraph twitterParagraph = new Paragraph()
-        twitterParagraph.add(new Phrase("\uF099", twitterFont))
-        if (badge.twitterAccount) {
-            def twitterAccount = badge.twitterAccount.startsWith('@') ? badge.twitterAccount : '@' + badge.twitterAccount
-            twitterParagraph.add(new Phrase(twitterAccount, twitterAccountFont))
-        }
-        twitterParagraph.spacingAfter = 10
-        twitterCell.addElement(twitterParagraph)
-
-        leftSide.addCell(twitterCell)*/
-
-/*        PdfPCell fixedHeightWrapper = new PdfPCell(leftSide)
-        fixedHeightWrapper.with {
-            fixedHeight = calculateLabelHeight()
-            borderWidth = cellBorderWidth
-        }
-        return fixedHeightWrapper*/
 
         PdfPCell backgroundWrapper = new PdfPCell(leftSide)
         backgroundWrapper.with {
