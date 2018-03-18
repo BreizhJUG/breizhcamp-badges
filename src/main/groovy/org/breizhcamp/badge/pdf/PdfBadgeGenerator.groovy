@@ -137,6 +137,7 @@ class PdfBadgeGenerator {
             horizontalAlignment = ALIGN_LEFT
             verticalAlignment = ALIGN_TOP
             borderWidth = cellBorderWidth
+            paddingLeft = -5
         }
         rightSide.addCell(idCell)
 
@@ -156,7 +157,19 @@ class PdfBadgeGenerator {
         } else {
             twitterAccount = ''
         }
-        PdfPCell twitterCell = new PdfPCell(new Phrase(twitterAccount, twitterAccountFont))
+
+
+        PdfTemplate template = writer.directContent.createTemplate(120, 16)
+        Rectangle r = new Rectangle(0, 0, 120, 16)
+        r.setBackgroundColor(BaseColor.WHITE)
+        template.rectangle(r)
+        ColumnText columnText = new ColumnText(template)
+        columnText.setSimpleColumn(r)
+        columnText.setAlignment(Element.ALIGN_CENTER)
+        columnText.addText(new Phrase(twitterAccount, twitterAccountFont))
+        columnText.go()
+
+        PdfPCell twitterCell = new PdfPCell(Image.getInstance(template))
         twitterCell.with {
             borderWidth = cellBorderWidth
             horizontalAlignment = ALIGN_CENTER
