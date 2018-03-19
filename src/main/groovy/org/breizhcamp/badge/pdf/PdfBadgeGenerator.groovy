@@ -26,6 +26,8 @@ class PdfBadgeGenerator {
 
     private final Map formatters
 
+    private float badgeWidth
+
     private final Random angleRandom = new Random()
 
     PdfBadgeGenerator(OutputStream outputStream, PageLayout pageLayout, boolean debug = false, Map formatters = [:]) {
@@ -46,7 +48,9 @@ class PdfBadgeGenerator {
 
         this.pageLayout = pageLayout
 
-        document = [pageLayout.format, pageLayout.margins.collect(milliToPoints)].flatten() as Document
+        def margins = pageLayout.margins.collect(milliToPoints)
+        document = [pageLayout.format, margins].flatten() as Document
+        badgeWidth = (pageLayout.format.width - margins[0] - margins[1]) / pageLayout.columns
         writer = PdfWriter.getInstance(document, outputStream)
         this.formatters = formatters
 
@@ -160,19 +164,29 @@ class PdfBadgeGenerator {
 
 
         PdfTemplate template = writer.directContent.createTemplate(120, 16)
-        Rectangle r = new Rectangle(0, 0, 120, 16)
-        r.setBackgroundColor(BaseColor.WHITE)
-        template.rectangle(r)
+//        Rectangle r = new Rectangle(0, 0, 120, 16)
+//        r.setBackgroundColor(BaseColor.WHITE)
+//        template.rectangle(r)
         ColumnText columnText = new ColumnText(template)
-        columnText.setSimpleColumn(r)
+        def rightSideWidth = (badgeWidth / 2) as float
+        columnText.setSimpleColumn(0, 0, rightSideWidth, 16)
         columnText.setAlignment(Element.ALIGN_CENTER)
         columnText.addText(new Phrase(twitterAccount, twitterAccountFont))
         columnText.go()
+        def textWidth = columnText.getFilledWidth()
+        def padding = ((rightSideWidth - textWidth) / 2) as float
+        Rectangle r = new Rectangle(padding, 0f, (rightSideWidth - padding) as float, 16f)
+        r.setBackgroundColor(BaseColor.WHITE)
+        template.rectangle(r)
+        ColumnText columnText2 = new ColumnText(template)
+        columnText2.setSimpleColumn(0, 0, rightSideWidth, 16)
+        columnText2.setAlignment(Element.ALIGN_CENTER)
+        columnText2.addText(new Phrase(twitterAccount, twitterAccountFont))
+        columnText2.go()
 
         PdfPCell twitterCell = new PdfPCell(Image.getInstance(template))
         twitterCell.with {
             borderWidth = cellBorderWidth
-            horizontalAlignment = ALIGN_CENTER
             verticalAlignment = ALIGN_BOTTOM
             paddingBottom = 55
         }
