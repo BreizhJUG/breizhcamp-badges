@@ -6,7 +6,6 @@ import com.itextpdf.text.*
 import com.itextpdf.text.pdf.*
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
 import org.breizhcamp.badge.Badge
-import org.codehaus.groovy.runtime.typehandling.BigDecimalMath
 
 import java.lang.IllegalArgumentException as IAE
 
@@ -201,7 +200,8 @@ class PdfBadgeGenerator {
         // Stretch it to its dimensions
         AffineTransform B = AffineTransform.getScaleInstance(image.getWidth(), image.getHeight())
         // Rotate it
-        AffineTransform C = AffineTransform.getRotateInstance(20 * Math.PI / 180)
+        def sign = angleRandom.nextFloat() >= 0.5f ? 1 : -1
+        AffineTransform C = AffineTransform.getRotateInstance(sign * angleRandom.nextFloat() * 15 * Math.PI / 180)
         // Move it to have the same center as above
         AffineTransform D = AffineTransform.getTranslateInstance(x, (2 * y / 3) as float)
         // Concatenate
