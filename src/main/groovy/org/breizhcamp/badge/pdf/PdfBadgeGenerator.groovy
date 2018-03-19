@@ -26,7 +26,7 @@ class PdfBadgeGenerator {
 
     private final Map formatters
 
-    private float badgeWidth
+    private final float badgeWidth
 
     private final Random angleRandom = new Random()
 
@@ -161,28 +161,25 @@ class PdfBadgeGenerator {
         } else {
             twitterAccount = ''
         }
-
-
-        PdfTemplate template = writer.directContent.createTemplate(120, 16)
-//        Rectangle r = new Rectangle(0, 0, 120, 16)
-//        r.setBackgroundColor(BaseColor.WHITE)
-//        template.rectangle(r)
-        ColumnText columnText = new ColumnText(template)
         def rightSideWidth = (badgeWidth / 2) as float
-        columnText.setSimpleColumn(0, 0, rightSideWidth, 16)
-        columnText.setAlignment(Element.ALIGN_CENTER)
-        columnText.addText(new Phrase(twitterAccount, twitterAccountFont))
-        columnText.go()
-        def textWidth = columnText.getFilledWidth()
+        def rectangleHeight = 30f
+        PdfTemplate template = writer.directContent.createTemplate(rightSideWidth, rectangleHeight)
+        ColumnText fakeColumnText = new ColumnText(template)
+        fakeColumnText.setSimpleColumn(0, 0, rightSideWidth, rectangleHeight)
+        fakeColumnText.setAlignment(Element.ALIGN_CENTER)
+        def phrase = new Phrase(twitterAccount, twitterAccountFont)
+        fakeColumnText.addText(phrase)
+        fakeColumnText.go(true)
+        def textWidth = fakeColumnText.getFilledWidth()
         def padding = ((rightSideWidth - textWidth) / 2) as float
-        Rectangle r = new Rectangle(padding, 0f, (rightSideWidth - padding) as float, 16f)
-        r.setBackgroundColor(BaseColor.WHITE)
+        Rectangle r = new Rectangle(padding, 0, (textWidth + padding) as float, 10f)
+        r.backgroundColor = BaseColor.WHITE
         template.rectangle(r)
-        ColumnText columnText2 = new ColumnText(template)
-        columnText2.setSimpleColumn(0, 0, rightSideWidth, 16)
-        columnText2.setAlignment(Element.ALIGN_CENTER)
-        columnText2.addText(new Phrase(twitterAccount, twitterAccountFont))
-        columnText2.go()
+        ColumnText columnText = new ColumnText(template)
+        columnText.setSimpleColumn(0, 0, rightSideWidth, 19f)
+        columnText.alignment = Element.ALIGN_CENTER
+        columnText.addText(phrase)
+        columnText.go()
 
         PdfPCell twitterCell = new PdfPCell(Image.getInstance(template))
         twitterCell.with {
