@@ -164,22 +164,28 @@ class PdfBadgeGenerator {
         def rightSideWidth = (badgeWidth / 2) as float
         def rectangleHeight = 30f
         PdfTemplate template = writer.directContent.createTemplate(rightSideWidth, rectangleHeight)
-        ColumnText fakeColumnText = new ColumnText(template)
-        fakeColumnText.setSimpleColumn(0, 0, rightSideWidth, rectangleHeight)
-        fakeColumnText.setAlignment(Element.ALIGN_CENTER)
-        def phrase = new Phrase(twitterAccount, twitterAccountFont)
-        fakeColumnText.addText(phrase)
-        fakeColumnText.go(true)
-        def textWidth = fakeColumnText.getFilledWidth()
-        def padding = ((rightSideWidth - textWidth) / 2) as float
-        Rectangle r = new Rectangle(padding, 0, (textWidth + padding) as float, 10f)
-        r.backgroundColor = BaseColor.WHITE
-        template.rectangle(r)
-        ColumnText columnText = new ColumnText(template)
-        columnText.setSimpleColumn(0, 0, rightSideWidth, 19f)
-        columnText.alignment = Element.ALIGN_CENTER
-        columnText.addText(phrase)
-        columnText.go()
+        if (twitterAccount) {
+            ColumnText fakeColumnText = new ColumnText(template)
+            fakeColumnText.setSimpleColumn(0, 0, rightSideWidth, rectangleHeight)
+            fakeColumnText.setAlignment(Element.ALIGN_CENTER)
+            def phrase = new Phrase(twitterAccount, twitterAccountFont)
+            fakeColumnText.addText(phrase)
+            fakeColumnText.go(true)
+            def textWidth = fakeColumnText.getFilledWidth()
+            def padding = ((rightSideWidth - textWidth) / 2) as float
+            Rectangle r = new Rectangle(padding, 0, (textWidth + padding) as float, 10f)
+            r.backgroundColor = BaseColor.WHITE
+            template.rectangle(r)
+            ColumnText columnText = new ColumnText(template)
+            columnText.setSimpleColumn(0, 0, rightSideWidth, 19f)
+            columnText.alignment = Element.ALIGN_CENTER
+            columnText.addText(phrase)
+            columnText.go()
+        } else {
+            Rectangle r = new Rectangle(10f, 0, (rightSideWidth - 10f) as float, 16f)
+            r.backgroundColor = BaseColor.WHITE
+            template.rectangle(r)
+        }
 
         PdfPCell twitterCell = new PdfPCell(Image.getInstance(template))
         twitterCell.with {
