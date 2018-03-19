@@ -1,10 +1,12 @@
 package org.breizhcamp.badge.pdf
 
 import au.com.bytecode.opencsv.CSVWriter
+import com.itextpdf.awt.geom.AffineTransform
 import com.itextpdf.text.*
 import com.itextpdf.text.pdf.*
 import com.itextpdf.text.pdf.qrcode.EncodeHintType
 import org.breizhcamp.badge.Badge
+import org.codehaus.groovy.runtime.typehandling.BigDecimalMath
 
 import java.lang.IllegalArgumentException as IAE
 
@@ -187,11 +189,34 @@ class PdfBadgeGenerator {
             template.rectangle(r)
         }
 
-        PdfPCell twitterCell = new PdfPCell(Image.getInstance(template))
+        def image = Image.getInstance(template)
+
+        def y = 60f
+        PdfTemplate contentByte = writer.directContent.createTemplate(rightSideWidth, y)
+        def x = (rightSideWidth / 2) as float
+        // Draw image as if the previous image was rotated around its center
+        // Image starts out being 1x1 with origin in lower left
+        // Move origin to center of image
+        AffineTransform A = AffineTransform.getTranslateInstance(-0.5, -0.5)
+        // Stretch it to its dimensions
+        AffineTransform B = AffineTransform.getScaleInstance(image.getWidth(), image.getHeight())
+        // Rotate it
+        AffineTransform C = AffineTransform.getRotateInstance(20 * Math.PI / 180)
+        // Move it to have the same center as above
+        AffineTransform D = AffineTransform.getTranslateInstance(x, (2 * y / 3) as float)
+        // Concatenate
+        AffineTransform M = (AffineTransform) A.clone()
+        M.preConcatenate(B)
+        M.preConcatenate(C)
+        M.preConcatenate(D)
+        //Draw
+        contentByte.addImage(image, M)
+
+        PdfPCell twitterCell = new PdfPCell(Image.getInstance(contentByte))
         twitterCell.with {
             borderWidth = cellBorderWidth
             verticalAlignment = ALIGN_BOTTOM
-            paddingBottom = 55
+            paddingBottom = 30
         }
         rightSide.addCell(twitterCell)
 
