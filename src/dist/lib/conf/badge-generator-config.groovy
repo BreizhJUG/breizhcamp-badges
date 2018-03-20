@@ -36,13 +36,13 @@ badgegenerator {
     parser {
         csv {
             fieldmapping = [
-                    'Identifiant'        : 'id',
-                    'Nom participant'    : 'lastname',
-                    'Prénom participant' : 'firstname',
-                    'E-mail Participant' : 'email',
-                    'Societe Participant': 'company',
-                    'Tarif'              : 'ticketType',
-                    'twitter'            : 'twitterAccount'
+                    'Identifiant'   : 'id',
+                    'Nom'           : 'lastname',
+                    'Prénom'        : 'firstname',
+                    'E-mail'        : 'email',
+                    'Entreprise #11': 'company',
+                    'Tarif'         : 'ticketType',
+                    'Twitter #5739' : 'twitterAccount'
             ]
             valueconverters = [
                     ticketType    : { value ->
@@ -53,7 +53,7 @@ badgegenerator {
                                 'exposant'                   : _ticketTypes[2],
                                 'Fanboy (3 jours)'           : _ticketTypes[0],
                                 'last minute'                : _ticketTypes[0],
-                                'organisateur'               : _ticketTypes[0],
+                                'Organisation'               : _ticketTypes[0],
                                 'Speaker'                    : _ticketTypes[4],
                                 'sponsor'                    : _ticketTypes[0],
                                 'Université (mercredi)'      : _ticketTypes[1],
@@ -83,7 +83,7 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : { s -> s ? "\u00A0>${s}" : '' },
+                lastname : { s -> s ? ">${s}" : '' },
                 firstname: { s -> "${s}<" }
         ]
     }
