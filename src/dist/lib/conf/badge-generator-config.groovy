@@ -30,35 +30,33 @@ def bttfFormatter = { s ->
             .replaceAll(/\p{InCombiningDiacriticalMarks}+/, '') // remove all accents
 }
 
-def _ticketTypes = ['Combo', 'Mercredi', 'Exposant', 'Conf', 'Speaker', 'Jeudi', 'Vendredi']
+def _ticketTypes = ['Combo', 'Mercredi', 'Exposant', 'Conf', 'Speaker', 'Jeudi', 'Vendredi', 'Orga']
 
 badgegenerator {
     parser {
         csv {
             fieldmapping = [
-                    'Identifiant'   : 'id',
-                    'Nom'           : 'lastname',
-                    'Prénom'        : 'firstname',
-                    'E-mail'        : 'email',
-                    'Entreprise #11': 'company',
-                    'Tarif'         : 'ticketType',
-                    'Twitter #5739' : 'twitterAccount'
+                    'id'            : 'id',
+                    'lastname'      : 'lastname',
+                    'firstname'     : 'firstname',
+                    'email'         : 'email',
+                    'company'       : 'company',
+                    'ticketType'    : 'ticketType',
+                    'twitterAccount': 'twitterAccount'
             ]
             valueconverters = [
                     ticketType    : { value ->
                         return [
-                                'bénévoles'                  : _ticketTypes[0],
-                                'Combo 3 jours'              : _ticketTypes[0],
-                                'Conférence (jeudi+vendredi)': _ticketTypes[3],
-                                'exposant'                   : _ticketTypes[2],
-                                'Fanboy (3 jours)'           : _ticketTypes[0],
-                                'last minute'                : _ticketTypes[0],
-                                'Organisation'               : _ticketTypes[0],
-                                'Speaker'                    : _ticketTypes[4],
-                                'sponsor'                    : _ticketTypes[0],
-                                'Université (mercredi)'      : _ticketTypes[1],
-                                'Jeudi'                      : _ticketTypes[5],
-                                'Vendredi'                   : _ticketTypes[6]
+                                'Combo (3 jours)'                         : _ticketTypes[0],
+                                'Combo Sponsors (3 jours)'                : _ticketTypes[0],
+                                'Conférences (jeudi et vendredi)'         : _ticketTypes[3],
+                                'Conférences Sponsors (jeudi et vendredi)': _ticketTypes[3],
+                                'Exposant'                                : _ticketTypes[2],
+                                'Organisation'                            : _ticketTypes[7],
+                                'Speaker'                                 : _ticketTypes[4],
+                                'Mercredi uniquement'                     : _ticketTypes[1],
+                                'Jeudi uniquement'                        : _ticketTypes[5],
+                                'Vendredi uniquement'                     : _ticketTypes[6]
                         ][value]
                     },
                     twitterAccount: { String value ->
