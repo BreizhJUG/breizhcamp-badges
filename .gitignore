@@ -4,3 +4,6 @@ target
 *.iml
 build
 .gradle
+/fonts
+/images
+/badge-generator-config.groovy
