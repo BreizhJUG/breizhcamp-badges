@@ -1,5 +1,5 @@
 plugins {
-    id 'net.saliman.cobertura' version '2.2.8'
+    id 'net.saliman.cobertura' version '2.6.0'
 }
 
 apply plugin: 'idea'
@@ -7,9 +7,11 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 apply plugin: 'net.saliman.cobertura'
 
-sourceCompatibility = 1.8
-version = '4.0'
-mainClassName = "BadgeGenerator"
+application {
+    mainClassName = "BadgeGenerator"
+    sourceCompatibility = 1.8
+    version = '5.0'
+}
 
 repositories {
     jcenter()
