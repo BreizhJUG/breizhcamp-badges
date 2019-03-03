@@ -23,7 +23,7 @@ def titleCase = { s ->
     return result.toString().replaceAll(/\s+/, ' ')
 }
 
-def bttfFormatter = { s ->
+def codeBustersFormatter = { s ->
     def onlyLetters = s.replaceAll(/(?i)[^\p{L}]/, ' ') // replace everything but letters by a space
     def noAccents = Normalizer
             .normalize(onlyLetters, Normalizer.Form.NFD)
@@ -60,19 +60,19 @@ badgegenerator {
                         ][value]
                     },
                     twitterAccount: { String value ->
-                        if (value) {
+                        if (value && value ==~ /[@A-Za-z]+/) { // font chosen for the twitter handle does not support numbers 😕
                             if (value.startsWith('http')) {
-                                return '@' + value.substring(value.lastIndexOf('/') + 1)
+                                return value.substring(value.lastIndexOf('/') + 1).toUpperCase()
                             }
                             if (value.startsWith('@')) {
-                                return value
+                                return value.substring(1).toUpperCase()
                             } else {
-                                return '@' + value
+                                return value.toUpperCase()
                             }
                         }
                     },
-                    firstname     : { String value -> bttfFormatter(value).toUpperCase() },
-                    lastname      : { String value -> bttfFormatter(value).toLowerCase() }
+                    firstname     : { String value -> codeBustersFormatter(value).toUpperCase() },
+                    lastname      : { String value -> codeBustersFormatter(value).toLowerCase() }
             ]
         }
         cli {
@@ -81,8 +81,8 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : { s -> s ? ">${s}" : '' },
-                firstname: { s -> "${s}<" }
+                lastname : { s -> s ? s : '' },
+                firstname: { s -> s }
         ]
     }
 }
