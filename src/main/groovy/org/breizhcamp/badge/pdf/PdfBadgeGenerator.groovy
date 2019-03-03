@@ -39,13 +39,13 @@ class PdfBadgeGenerator {
 
         badgeBaseFont = createFont('/fonts/nunito/Nunito-Light.ttf', IDENTITY_H, EMBEDDED)
         symbolBaseFont = createFont('/fonts/fontawesome/fontawesome-webfont.ttf', IDENTITY_H, EMBEDDED)
-        nameBaseFont = createFont('/fonts/BTTF/BTTF.ttf', IDENTITY_H, EMBEDDED)
-        twitterBaseFont = createFont('/fonts/Impact Label/Impact Label.ttf', IDENTITY_H, EMBEDDED)
+        nameBaseFont = createFont('/fonts/GHOSTBUS/GHOSTBUS.ttf', IDENTITY_H, EMBEDDED)
+        twitterBaseFont = createFont('/fonts/Ghostbusters_Nametag/Ghostbusters_Nametag.ttf', IDENTITY_H, EMBEDDED)
         idFont = new Font(badgeBaseFont, 8, Font.NORMAL, BaseColor.GRAY)
         nameFont = new Font(nameBaseFont, 12, Font.NORMAL, BaseColor.BLACK)
         companyFont = new Font(badgeBaseFont, 12, Font.NORMAL, BaseColor.GRAY)
-        twitterAccountFont = new Font(twitterBaseFont, 12, Font.NORMAL, new BaseColor(130, 23, 29))
-        ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.WHITE)
+        twitterAccountFont = new Font(twitterBaseFont, 18, Font.BOLD, new BaseColor(214, 58, 50))
+        ticketTypeFont = new Font(badgeBaseFont, 14, Font.BOLD, BaseColor.BLACK)
 
         this.pageLayout = pageLayout
 
@@ -152,6 +152,7 @@ class PdfBadgeGenerator {
         ticketTypeCell.with {
             horizontalAlignment = ALIGN_CENTER
             borderWidth = cellBorderWidth
+            paddingTop = -10
         }
         rightSide.addCell(ticketTypeCell)
 
@@ -173,9 +174,9 @@ class PdfBadgeGenerator {
             fakeColumnText.addText(phrase)
             fakeColumnText.go(true)
             def textWidth = fakeColumnText.getFilledWidth()
-            def padding = ((rightSideWidth - textWidth) / 2) as float
-            Rectangle r = new Rectangle(padding, 0, (textWidth + padding) as float, 10f)
-            r.backgroundColor = BaseColor.WHITE
+            def padding = ((rightSideWidth - textWidth) / 3) as float
+            Rectangle r = new Rectangle(padding, 0, (textWidth + 2 * padding) as float, 22f)
+            r.backgroundColor = new BaseColor(31, 30, 36)
             template.rectangle(r)
             ColumnText columnText = new ColumnText(template)
             columnText.setSimpleColumn(0, 0, rightSideWidth, 19f)
@@ -183,8 +184,8 @@ class PdfBadgeGenerator {
             columnText.addText(phrase)
             columnText.go()
         } else {
-            Rectangle r = new Rectangle(10f, 0, (rightSideWidth - 10f) as float, 16f)
-            r.backgroundColor = BaseColor.WHITE
+            Rectangle r = new Rectangle(10f, 0, (rightSideWidth - 10f) as float, 22f)
+            r.backgroundColor = new BaseColor(240, 240, 240)
             template.rectangle(r)
         }
 
@@ -251,7 +252,8 @@ class PdfBadgeGenerator {
     }
 
     void endDocument() {
-        (labelCount % pageLayout.columns).times { addFiller() } // fillers nécessaires pour compléter la dernière ligne
+        (labelCount % pageLayout.columns).times { addFiller() }
+        // fillers nécessaires pour compléter la dernière ligne
         document.add(docTable)
         document.close()
     }
