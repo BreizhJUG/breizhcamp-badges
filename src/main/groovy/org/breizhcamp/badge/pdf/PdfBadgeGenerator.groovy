@@ -217,7 +217,7 @@ class PdfBadgeGenerator {
         twitterCell.with {
             borderWidth = cellBorderWidth
             verticalAlignment = ALIGN_BOTTOM
-            paddingBottom = 30
+            paddingBottom = 10
         }
         rightSide.addCell(twitterCell)
 

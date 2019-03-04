@@ -60,7 +60,8 @@ badgegenerator {
                         ][value]
                     },
                     twitterAccount: { String value ->
-                        if (value && value ==~ /[@A-Za-z]+/) { // font chosen for the twitter handle does not support numbers 😕
+                        if (value && value ==~ /[@A-Za-z]+/) {
+                            // font chosen for the twitter handle does not support numbers 😕
                             if (value.startsWith('http')) {
                                 return value.substring(value.lastIndexOf('/') + 1).toUpperCase()
                             }
@@ -72,7 +73,7 @@ badgegenerator {
                         }
                     },
                     firstname     : { String value -> codeBustersFormatter(value).toUpperCase() },
-                    lastname      : { String value -> codeBustersFormatter(value).toLowerCase() }
+                    lastname      : { String value -> codeBustersFormatter(value).toUpperCase() }
             ]
         }
         cli {
