@@ -42,7 +42,10 @@ badgegenerator {
                     'email'         : 'email',
                     'company'       : 'company',
                     'ticketType'    : 'ticketType',
-                    'twitterAccount': 'twitterAccount'
+                    'twitterAccount': 'twitterAccount',
+                    'noGoodies'     : 'noGoodies',
+                    'tShirtFitting' : 'tShirtFitting',
+                    'tShirtSize'    : 'tShirtSize'
             ]
             valueconverters = [
                     ticketType    : { value ->

@@ -7,6 +7,6 @@ import groovy.transform.ToString
 @ToString(includeNames = true)
 class Badge {
 
-    String id, lastname, firstname, email, company, ticketType, twitterAccount
+    String id, lastname, firstname, email, company, ticketType, twitterAccount, noGoodies, tShirtFitting, tShirtSize
 
 }
