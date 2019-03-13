@@ -30,7 +30,7 @@ def codeBustersFormatter = { s ->
             .replaceAll(/\p{InCombiningDiacriticalMarks}+/, '') // remove all accents
 }
 
-def _ticketTypes = ['Combo', 'Mercredi', 'Exposant', 'Conf', 'Speaker', 'Jeudi', 'Vendredi', 'Orga']
+def _ticketTypes = ['Combo', 'Mercredi', 'Exposant', 'Conf', 'Speaker', 'Jeudi', 'Vendredi', 'Staff']
 
 badgegenerator {
     parser {
@@ -47,16 +47,15 @@ badgegenerator {
             valueconverters = [
                     ticketType    : { value ->
                         return [
-                                'Combo (3 jours)'                         : _ticketTypes[0],
-                                'Combo Sponsors (3 jours)'                : _ticketTypes[0],
-                                'Conférences (jeudi et vendredi)'         : _ticketTypes[3],
-                                'Conférences Sponsors (jeudi et vendredi)': _ticketTypes[3],
-                                'Exposant'                                : _ticketTypes[2],
-                                'Organisation'                            : _ticketTypes[7],
-                                'Speaker'                                 : _ticketTypes[4],
-                                'Mercredi uniquement'                     : _ticketTypes[1],
-                                'Jeudi uniquement'                        : _ticketTypes[5],
-                                'Vendredi uniquement'                     : _ticketTypes[6]
+                                'Combo (3 jours)'                : _ticketTypes[0],
+                                'Combo Sponsors (3 jours)'       : _ticketTypes[0],
+                                'Conférences (jeudi et vendredi)': _ticketTypes[3],
+                                'Exposant'                       : _ticketTypes[2],
+                                'Staff'                          : _ticketTypes[7],
+                                'Speaker'                        : _ticketTypes[4],
+                                'Mercredi'                       : _ticketTypes[1],
+                                'Jeudi'                          : _ticketTypes[5],
+                                'Vendredi'                       : _ticketTypes[6]
                         ][value]
                     },
                     twitterAccount: { String value ->
