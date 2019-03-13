@@ -1,10 +1,10 @@
 id,lastname,firstname,email,company,ticketType,twitterAccount,noGoodies,tShirtFitting,tShirtSize
-1,Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Jeudi,@rbaratheon,false,Homme,XXXL
-2,STARK,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Mercredi,@beheadardstark,,,
-3,Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,Exposant,winteriscoming,,,
-4,Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Conférences (jeudi et vendredi),,,,
-5,Stark,Sansa,sansa.stark@the-eyrie.wes,,Vendredi,mcvdlm,,,
-6,Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Speaker,typhoonborn,,,
+1,Baratheon,Robert,robert.baratheon@kings-landing.wes,Retired King,Jeudi,@rbaratheon,,Homme,XXXL
+2,STARK,Eddard,eddard.stark@winterfell.wes,Retired Hand of the King,Mercredi,@beheadardstark,1,,
+3,Snow,Jon,jon.snow@castle-black.wes,The Night's Watch,Exposant,winteriscoming,,Homme,M
+4,Lannister,Tyrion,tyrion.lannister@casterly-rock.wes,Hand of the King,Conférences (jeudi et vendredi),,Homme,XS,
+5,Stark,Sansa,sansa.stark@the-eyrie.wes,,Vendredi,mcvdlm,,Femme,S
+6,Targaryen,Daenerys,daenerys.targaryen@meereen.ess,Mother of Dragons,Speaker,typhoonborn,,Femme,L
 7,,Varys,varys@nsa.gouv.wes,Butterfly in chief,Staff,spiderman,,,
 888,Others,The,the.others@beyond-the-wall.wes,Häagen-Dazs,Combo (3 jours),https://twitter.com/misterfreeze,,,
 9,Hodor,Hodor,hodor.hodor@hodor.hodor,Les Déménageurs Bretons,Combo (3 jours),hod0r,,,

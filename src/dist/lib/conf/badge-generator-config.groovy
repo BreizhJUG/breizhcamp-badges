@@ -84,8 +84,27 @@ badgegenerator {
     }
     pdfwriter {
         valueformatters = [
-                lastname : { s -> s ? s : '' },
-                firstname: { s -> s }
+                lastname     : { s -> s ? s : '' },
+                firstname    : { s -> s },
+                tShirtFitting: { s ->
+                    def fittingMappings = [
+                            'Homme': 'H',
+                            'Femme': 'F'
+                    ]
+                    return s ? fittingMappings[s] ?: '' : ''
+                },
+                tShirtSize   : { s ->
+                    def sizeMappings = [
+                            XS  : '1',
+                            S   : '2',
+                            M   : '3',
+                            L   : '4',
+                            XL  : '5',
+                            XXL : '6',
+                            XXXL: '7',
+                    ]
+                    return s ? sizeMappings[s] ?: '' : ''
+                }
         ]
     }
 }

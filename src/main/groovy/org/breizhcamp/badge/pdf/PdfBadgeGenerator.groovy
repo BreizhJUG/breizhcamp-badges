@@ -137,7 +137,9 @@ class PdfBadgeGenerator {
         PdfPTable rightSide = generateSideContentTable()
 
         // Badge ID
-        PdfPCell idCell = new PdfPCell(new Phrase(badge.id, idFont))
+        def id = badge.id
+        def goodiesInfo = badge.noGoodies ? 'PG' : "${formatValue(badge.tShirtFitting, 'tShirtFitting')}${formatValue(badge.tShirtSize, 'tShirtSize')}"
+        PdfPCell idCell = new PdfPCell(new Phrase(goodiesInfo ? "${id}-${goodiesInfo}" : id, idFont))
         idCell.with {
             horizontalAlignment = ALIGN_LEFT
             verticalAlignment = ALIGN_TOP
